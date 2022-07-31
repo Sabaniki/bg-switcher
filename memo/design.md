@@ -25,3 +25,16 @@
 - MED 値を利用して切り替える
 - SDN Controller が Blue/Green のルータに対して MED の切り替えを行う
 - EX，CE は Blue/Green のバックボーンルータ群の MED を尊重するコンフィグを行う
+
+## 戦略
+- トポロジーの作成は tinet で行う
+    - 先述の通り，基本は BGP Unnumered を利用する
+    - アドレス割当，広告するネットワークについては後述
+- SDN Controller は k8s の CRD を利用して作成する
+    - KloudNFV
+- KloudNFV を動作させる環境
+    - kind で k8s の環境を作成する
+    - Blue/Green の 6 つのルータはホストネットワークとの疎通を持たせるためにブリッジを作成する
+        - この線がマネジメントとなり，k8s に疎通する
+    - tinet で作成したコンテナを network に指定して，拠点 3 つ * Blue/Green 2 系統 合計 6 つのコントローラを docker-compose.yml に記述
+        - このコンテナは docker-in-docker なイメージを利用し，名前で指定して `docker exec -it Blue-A vtysh -c "hogefuga..."` みたいに設定を投入
