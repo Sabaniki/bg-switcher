@@ -1,10 +1,10 @@
 <mxfile host="65bd71144e">
     <diagram id="_uSCvHOfGNkeNE3oSvre" name="ページ1">
-        <mxGraphModel dx="692" dy="2266" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="449" dy="2055" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="51" value="" style="rounded=1;whiteSpace=wrap;html=1;fontColor=#FF8000;strokeColor=default;fillColor=none;dashed=1;strokeWidth=2;direction=east;" parent="1" vertex="1">
+                <mxCell id="51" value="" style="rounded=1;whiteSpace=wrap;html=1;fontColor=#FF8000;strokeColor=#00CC66;fillColor=none;dashed=1;strokeWidth=2;direction=east;" parent="1" vertex="1">
                     <mxGeometry x="150" y="-795.5" width="440" height="470" as="geometry"/>
                 </mxCell>
                 <mxCell id="93" style="edgeStyle=none;html=1;exitX=0.875;exitY=0.75;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.125;entryY=0.25;entryDx=0;entryDy=0;entryPerimeter=0;fontSize=16;fontColor=#B266FF;endArrow=none;endFill=0;strokeWidth=2;strokeColor=#FF8000;" parent="1" source="55" target="71" edge="1">
@@ -185,10 +185,10 @@
                 <mxCell id="132" value="&lt;font color=&quot;#76608a&quot;&gt;EM-B&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;fontColor=#D80073;" parent="1" vertex="1">
                     <mxGeometry x="60" y="-602" width="50" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="133" value="&lt;font color=&quot;#b266ff&quot;&gt;EA-A&lt;br&gt;AS 65100&lt;/font&gt;" style="verticalLabelPosition=bottom;sketch=0;html=1;fillColor=#A153A0;strokeColor=#ffffff;verticalAlign=top;align=center;points=[[0,0.5,0],[0.125,0.25,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[0.875,0.25,0],[1,0.5,0],[0.875,0.75,0],[0.75,1,0],[0.5,1,0],[0.125,0.75,0]];pointerEvents=1;shape=mxgraph.cisco_safe.compositeIcon;bgIcon=mxgraph.cisco_safe.design.blank_device;resIcon=mxgraph.cisco_safe.design.router;fontSize=12;" vertex="1" parent="1">
+                <mxCell id="133" value="&lt;font color=&quot;#b266ff&quot;&gt;EA-A&lt;br&gt;AS 65100&lt;/font&gt;" style="verticalLabelPosition=bottom;sketch=0;html=1;fillColor=#A153A0;strokeColor=default;verticalAlign=top;align=center;points=[[0,0.5,0],[0.125,0.25,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[0.875,0.25,0],[1,0.5,0],[0.875,0.75,0],[0.75,1,0],[0.5,1,0],[0.125,0.75,0]];pointerEvents=1;shape=mxgraph.cisco_safe.compositeIcon;bgIcon=mxgraph.cisco_safe.design.blank_device;resIcon=mxgraph.cisco_safe.design.router;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="632" y="-668" width="50" height="45" as="geometry"/>
                 </mxCell>
-                <mxCell id="134" value="&lt;font color=&quot;#b266ff&quot;&gt;EA-B&lt;br&gt;AS 65200&lt;/font&gt;" style="verticalLabelPosition=bottom;sketch=0;html=1;fillColor=#A153A0;strokeColor=#ffffff;verticalAlign=top;align=center;points=[[0,0.5,0],[0.125,0.25,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[0.875,0.25,0],[1,0.5,0],[0.875,0.75,0],[0.75,1,0],[0.5,1,0],[0.125,0.75,0]];pointerEvents=1;shape=mxgraph.cisco_safe.compositeIcon;bgIcon=mxgraph.cisco_safe.design.blank_device;resIcon=mxgraph.cisco_safe.design.router;fontSize=12;" vertex="1" parent="1">
+                <mxCell id="134" value="&lt;font color=&quot;#b266ff&quot;&gt;EA-B&lt;br&gt;AS 65200&lt;/font&gt;" style="verticalLabelPosition=bottom;sketch=0;html=1;fillColor=#A153A0;strokeColor=default;verticalAlign=top;align=center;points=[[0,0.5,0],[0.125,0.25,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[0.875,0.25,0],[1,0.5,0],[0.875,0.75,0],[0.75,1,0],[0.5,1,0],[0.125,0.75,0]];pointerEvents=1;shape=mxgraph.cisco_safe.compositeIcon;bgIcon=mxgraph.cisco_safe.design.blank_device;resIcon=mxgraph.cisco_safe.design.router;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="60.00000000000002" y="-485" width="50" height="45" as="geometry"/>
                 </mxCell>
             </root>
