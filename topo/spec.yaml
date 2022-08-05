@@ -54,17 +54,6 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "interface lo"
-      -c " ip address 2001:db8:6500:100:ace::1/128"
-  - cmd: >-
-      vtysh -c "conf t"
-      -c "router ospf6"
-      -c " ospf6 router-id 10.64.60.1"
-      -c " interface blue-b area 0.0.0.0"
-      -c " interface blue-c area 0.0.0.0"
-      -c " interface lo area 0.0.0.0"
-  - cmd: >-
-      vtysh -c "conf t"
       -c "router bgp 64600"
       -c " bgp router-id 10.64.60.1"
       -c " no bgp ebgp-requires-policy"
@@ -73,11 +62,8 @@ node_configs:
       -c " bgp confederation peers 64501 64502 64503 64601"
       -c " neighbor BB peer-group"
       -c " neighbor BB remote-as 64600"
-      -c " neighbor BB update-source lo"
-      -c " neighbor 2001:db8:6500:100:cafe::1 peer-group BB"
-      -c " neighbor 2001:db8:6500:100:cafe::1 description lo.blue-b"
-      -c " neighbor 2001:db8:6500:100:beef::1 peer-group BB"
-      -c " neighbor 2001:db8:6500:100:beef::1 description lo.blue-c"
+      -c " neighbor blue-b interface peer-group BB"
+      -c " neighbor blue-c interface peer-group BB"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
@@ -91,17 +77,6 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "interface lo"
-      -c " ip address 2001:db8:6500:100:cafe::1/128"
-  - cmd: >-
-      vtysh -c "conf t"
-      -c "router ospf6"
-      -c " ospf6 router-id 10.64.60.2"
-      -c " interface blue-a area 0.0.0.0"
-      -c " interface blue-c area 0.0.0.0"
-      -c " interface lo area 0.0.0.0"
-  - cmd: >-
-      vtysh -c "conf t"
       -c "router bgp 64600"
       -c " bgp router-id 10.64.60.2"
       -c " no bgp ebgp-requires-policy"
@@ -110,11 +85,8 @@ node_configs:
       -c " bgp confederation peers 64501 64502 64503 64601"
       -c " neighbor BB peer-group"
       -c " neighbor BB remote-as 64600"
-      -c " neighbor BB update-source lo"
-      -c " neighbor 2001:db8:6500:100:ace::1 peer-group BB"
-      -c " neighbor 2001:db8:6500:100:ace::1 description lo.blue-a"
-      -c " neighbor 2001:db8:6500:100:beef::1 peer-group BB"
-      -c " neighbor 2001:db8:6500:100:beef::1 description lo.blue-c"
+      -c " neighbor blue-a interface peer-group BB"
+      -c " neighbor blue-c interface peer-group BB"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
@@ -128,17 +100,6 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "interface lo"
-      -c " ip address 2001:db8:6500:100:beef::1/128"
-  - cmd: >-
-      vtysh -c "conf t"
-      -c "router ospf6"
-      -c " ospf6 router-id 10.64.60.3"
-      -c " interface blue-b area 0.0.0.0"
-      -c " interface blue-a area 0.0.0.0"
-      -c " interface lo area 0.0.0.0"
-  - cmd: >-
-      vtysh -c "conf t"
       -c "router bgp 64600"
       -c " bgp router-id 10.64.60.3"
       -c " no bgp ebgp-requires-policy"
@@ -147,11 +108,8 @@ node_configs:
       -c " bgp confederation peers 64501 64502 64503 64601"
       -c " neighbor BB peer-group"
       -c " neighbor BB remote-as 64600"
-      -c " neighbor BB update-source lo"
-      -c " neighbor 2001:db8:6500:100:ace::1 peer-group BB"
-      -c " neighbor 2001:db8:6500:100:ace::1 description lo.blue-a"
-      -c " neighbor 2001:db8:6500:100:cafe::1 peer-group BB"
-      -c " neighbor 2001:db8:6500:100:cafe::1 description lo.blue-b"
+      -c " neighbor blue-b interface peer-group BB"
+      -c " neighbor blue-a interface peer-group BB"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
@@ -165,17 +123,6 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "interface lo"
-      -c " ip address 2001:db8:6500:200:ace::1/128"
-  - cmd: >-
-      vtysh -c "conf t"
-      -c "router ospf6"
-      -c " ospf6 router-id 10.64.61.1"
-      -c " interface green-b area 0.0.0.0"
-      -c " interface green-c area 0.0.0.0"
-      -c " interface lo area 0.0.0.0"
-  - cmd: >-
-      vtysh -c "conf t"
       -c "router bgp 64600"
       -c " bgp router-id 10.64.61.1"
       -c " no bgp ebgp-requires-policy"
@@ -184,11 +131,8 @@ node_configs:
       -c " bgp confederation peers 64501 64502 64503 64601"
       -c " neighbor BB peer-group"
       -c " neighbor BB remote-as 64600"
-      -c " neighbor BB update-source lo"
-      -c " neighbor 2001:db8:6500:200:cafe::1 peer-group BB"
-      -c " neighbor 2001:db8:6500:200:cafe::1 description lo.green-b"
-      -c " neighbor 2001:db8:6500:200:beef::1 peer-group BB"
-      -c " neighbor 2001:db8:6500:200:beef::1 description lo.green-c"
+      -c " neighbor green-b interface peer-group BB"
+      -c " neighbor green-c interface peer-group BB"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
@@ -202,17 +146,6 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "interface lo"
-      -c " ip address 2001:db8:6500:200:cafe::1/128"
-  - cmd: >-
-      vtysh -c "conf t"
-      -c "router ospf6"
-      -c " ospf6 router-id 10.64.61.2"
-      -c " interface green-a area 0.0.0.0"
-      -c " interface green-c area 0.0.0.0"
-      -c " interface lo area 0.0.0.0"
-  - cmd: >-
-      vtysh -c "conf t"
       -c "router bgp 64600"
       -c " bgp router-id 10.64.61.2"
       -c " no bgp ebgp-requires-policy"
@@ -221,11 +154,8 @@ node_configs:
       -c " bgp confederation peers 64501 64502 64503 64601"
       -c " neighbor BB peer-group"
       -c " neighbor BB remote-as 64600"
-      -c " neighbor BB update-source lo"
-      -c " neighbor 2001:db8:6500:200:ace::1 peer-group BB"
-      -c " neighbor 2001:db8:6500:200:ace::1 description lo.green-a"
-      -c " neighbor 2001:db8:6500:200:beef::1 peer-group BB"
-      -c " neighbor 2001:db8:6500:200:beef::1 description lo.gren-c"
+      -c " neighbor green-a peer-group BB"
+      -c " neighbor green-c peer-group BB"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
@@ -239,17 +169,6 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "interface lo"
-      -c " ip address 2001:db8:6500:200:beef::1/128"
-  - cmd: >-
-      vtysh -c "conf t"
-      -c "router ospf6"
-      -c " ospf6 router-id 10.64.61.3"
-      -c " interface green-b area 0.0.0.0"
-      -c " interface green-a area 0.0.0.0"
-      -c " interface lo area 0.0.0.0"
-  - cmd: >-
-      vtysh -c "conf t"
       -c "router bgp 64600"
       -c " bgp router-id 10.64.61.3"
       -c " no bgp ebgp-requires-policy"
@@ -258,11 +177,8 @@ node_configs:
       -c " bgp confederation peers 64501 64502 64503 64601"
       -c " neighbor BB peer-group"
       -c " neighbor BB remote-as 64600"
-      -c " neighbor BB update-source lo"
-      -c " neighbor 2001:db8:6500:200:ace::1 peer-group BB"
-      -c " neighbor 2001:db8:6500:200:ace::1 description lo.green-a"
-      -c " neighbor 2001:db8:6500:200:cafe::1 peer-group BB"
-      -c " neighbor 2001:db8:6500:200:cafe::1 description lo.green-b"
+      -c " neighbor green-a peer-group BB"
+      -c " neighbor green-b peer-group BB"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
