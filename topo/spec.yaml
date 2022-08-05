@@ -1,0 +1,273 @@
+nodes:
+- name: Blue-A
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: blue-b, type: direct, args: Blue-B#blue-a }
+  - { name: blue-c, type: direct, args: Blue-C#blue-a }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+- name: Blue-B
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: blue-a, type: direct, args: Blue-A#blue-b }
+  - { name: blue-c, type: direct, args: Blue-C#blue-b }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+- name: Blue-C
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: blue-b, type: direct, args: Blue-B#blue-c }
+  - { name: blue-a, type: direct, args: Blue-A#blue-c }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+
+- name: Green-A
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: green-b, type: direct, args: Green-B#green-a }
+  - { name: green-c, type: direct, args: Green-C#green-a }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+- name: Green-B
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: green-a, type: direct, args: Green-A#green-b }
+  - { name: green-c, type: direct, args: Green-C#green-b }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+- name: Green-C
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: green-b, type: direct, args: Green-B#green-c }
+  - { name: green-a, type: direct, args: Green-A#green-c }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+
+node_configs:
+- name: Blue-A
+  cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface lo"
+      -c " ip address 2001:db8:6500:100:ace::1/128"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router ospf6"
+      -c " ospf6 router-id 10.64.60.1"
+      -c " interface blue-b area 0.0.0.0"
+      -c " interface blue-c area 0.0.0.0"
+      -c " interface lo area 0.0.0.0"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64600"
+      -c " bgp router-id 10.64.60.1"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp default ipv4-unicast"
+      -c " bgp confederation identifier 65000"
+      -c " bgp confederation peers 64501 64502 64503 64601"
+      -c " neighbor BB peer-group"
+      -c " neighbor BB remote-as 64600"
+      -c " neighbor BB update-source lo"
+      -c " neighbor 2001:db8:6500:100:cafe::1 peer-group BB"
+      -c " neighbor 2001:db8:6500:100:cafe::1 description lo.blue-b"
+      -c " neighbor 2001:db8:6500:100:beef::1 peer-group BB"
+      -c " neighbor 2001:db8:6500:100:beef::1 description lo.blue-c"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64600"
+      -c " address-family ipv6 unicast"
+      -c "  network 2001:db8:6500::/48"
+      -c "  neighbor BB activate"
+      -c "  neighbor BB next-hop-self"
+      -c "  neighbor BB soft-reconfiguration inbound"
+
+- name: Blue-B
+  cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface lo"
+      -c " ip address 2001:db8:6500:100:cafe::1/128"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router ospf6"
+      -c " ospf6 router-id 10.64.60.2"
+      -c " interface blue-a area 0.0.0.0"
+      -c " interface blue-c area 0.0.0.0"
+      -c " interface lo area 0.0.0.0"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64600"
+      -c " bgp router-id 10.64.60.2"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp default ipv4-unicast"
+      -c " bgp confederation identifier 65000"
+      -c " bgp confederation peers 64501 64502 64503 64601"
+      -c " neighbor BB peer-group"
+      -c " neighbor BB remote-as 64600"
+      -c " neighbor BB update-source lo"
+      -c " neighbor 2001:db8:6500:100:ace::1 peer-group BB"
+      -c " neighbor 2001:db8:6500:100:ace::1 description lo.blue-a"
+      -c " neighbor 2001:db8:6500:100:beef::1 peer-group BB"
+      -c " neighbor 2001:db8:6500:100:beef::1 description lo.blue-c"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64600"
+      -c " address-family ipv6 unicast"
+      -c "  network 2001:db8:6500::/48"
+      -c "  neighbor BB activate"
+      -c "  neighbor BB next-hop-self"
+      -c "  neighbor BB soft-reconfiguration inbound"
+
+- name: Blue-C
+  cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface lo"
+      -c " ip address 2001:db8:6500:100:beef::1/128"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router ospf6"
+      -c " ospf6 router-id 10.64.60.3"
+      -c " interface blue-b area 0.0.0.0"
+      -c " interface blue-a area 0.0.0.0"
+      -c " interface lo area 0.0.0.0"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64600"
+      -c " bgp router-id 10.64.60.3"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp default ipv4-unicast"
+      -c " bgp confederation identifier 65000"
+      -c " bgp confederation peers 64501 64502 64503 64601"
+      -c " neighbor BB peer-group"
+      -c " neighbor BB remote-as 64600"
+      -c " neighbor BB update-source lo"
+      -c " neighbor 2001:db8:6500:100:ace::1 peer-group BB"
+      -c " neighbor 2001:db8:6500:100:ace::1 description lo.blue-a"
+      -c " neighbor 2001:db8:6500:100:cafe::1 peer-group BB"
+      -c " neighbor 2001:db8:6500:100:cafe::1 description lo.blue-b"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64600"
+      -c " address-family ipv6 unicast"
+      -c "  network 2001:db8:6500::/48"
+      -c "  neighbor BB activate"
+      -c "  neighbor BB next-hop-self"
+      -c "  neighbor BB soft-reconfiguration inbound"
+      
+- name: Green-A
+  cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface lo"
+      -c " ip address 2001:db8:6500:200:ace::1/128"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router ospf6"
+      -c " ospf6 router-id 10.64.61.1"
+      -c " interface green-b area 0.0.0.0"
+      -c " interface green-c area 0.0.0.0"
+      -c " interface lo area 0.0.0.0"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64600"
+      -c " bgp router-id 10.64.61.1"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp default ipv4-unicast"
+      -c " bgp confederation identifier 65000"
+      -c " bgp confederation peers 64501 64502 64503 64601"
+      -c " neighbor BB peer-group"
+      -c " neighbor BB remote-as 64600"
+      -c " neighbor BB update-source lo"
+      -c " neighbor 2001:db8:6500:200:cafe::1 peer-group BB"
+      -c " neighbor 2001:db8:6500:200:cafe::1 description lo.green-b"
+      -c " neighbor 2001:db8:6500:200:beef::1 peer-group BB"
+      -c " neighbor 2001:db8:6500:200:beef::1 description lo.green-c"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64600"
+      -c " address-family ipv6 unicast"
+      -c "  network 2001:db8:6500::/48"
+      -c "  neighbor BB activate"
+      -c "  neighbor BB next-hop-self"
+      -c "  neighbor BB soft-reconfiguration inbound"
+
+- name: Green-B
+  cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface lo"
+      -c " ip address 2001:db8:6500:200:cafe::1/128"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router ospf6"
+      -c " ospf6 router-id 10.64.61.2"
+      -c " interface green-a area 0.0.0.0"
+      -c " interface green-c area 0.0.0.0"
+      -c " interface lo area 0.0.0.0"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64600"
+      -c " bgp router-id 10.64.61.2"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp default ipv4-unicast"
+      -c " bgp confederation identifier 65000"
+      -c " bgp confederation peers 64501 64502 64503 64601"
+      -c " neighbor BB peer-group"
+      -c " neighbor BB remote-as 64600"
+      -c " neighbor BB update-source lo"
+      -c " neighbor 2001:db8:6500:200:ace::1 peer-group BB"
+      -c " neighbor 2001:db8:6500:200:ace::1 description lo.green-a"
+      -c " neighbor 2001:db8:6500:200:beef::1 peer-group BB"
+      -c " neighbor 2001:db8:6500:200:beef::1 description lo.gren-c"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64600"
+      -c " address-family ipv6 unicast"
+      -c "  network 2001:db8:6500::/48"
+      -c "  neighbor BB activate"
+      -c "  neighbor BB next-hop-self"
+      -c "  neighbor BB soft-reconfiguration inbound"
+
+- name: Green-C
+  cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface lo"
+      -c " ip address 2001:db8:6500:200:beef::1/128"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router ospf6"
+      -c " ospf6 router-id 10.64.61.3"
+      -c " interface green-b area 0.0.0.0"
+      -c " interface green-a area 0.0.0.0"
+      -c " interface lo area 0.0.0.0"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64600"
+      -c " bgp router-id 10.64.61.3"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp default ipv4-unicast"
+      -c " bgp confederation identifier 65000"
+      -c " bgp confederation peers 64501 64502 64503 64601"
+      -c " neighbor BB peer-group"
+      -c " neighbor BB remote-as 64600"
+      -c " neighbor BB update-source lo"
+      -c " neighbor 2001:db8:6500:200:ace::1 peer-group BB"
+      -c " neighbor 2001:db8:6500:200:ace::1 description lo.green-a"
+      -c " neighbor 2001:db8:6500:200:cafe::1 peer-group BB"
+      -c " neighbor 2001:db8:6500:200:cafe::1 description lo.green-b"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64600"
+      -c " address-family ipv6 unicast"
+      -c "  network 2001:db8:6500::/48"
+      -c "  neighbor BB activate"
+      -c "  neighbor BB next-hop-self"
+      -c "  neighbor BB soft-reconfiguration inbound"
