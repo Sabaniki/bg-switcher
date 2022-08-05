@@ -4,6 +4,7 @@ nodes:
   interfaces:
   - { name: blue-b, type: direct, args: Blue-B#blue-a }
   - { name: blue-c, type: direct, args: Blue-C#blue-a }
+  - { name: ex-a, type: direct, args: EX-A#blue-a }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -12,6 +13,7 @@ nodes:
   interfaces:
   - { name: blue-a, type: direct, args: Blue-A#blue-b }
   - { name: blue-c, type: direct, args: Blue-C#blue-b }
+  - { name: ex-b, type: direct, args: EX-B#blue-b }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -20,6 +22,7 @@ nodes:
   interfaces:
   - { name: blue-b, type: direct, args: Blue-B#blue-c }
   - { name: blue-a, type: direct, args: Blue-A#blue-c }
+  - { name: ex-c, type: direct, args: EX-C#blue-c }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -29,6 +32,7 @@ nodes:
   interfaces:
   - { name: green-b, type: direct, args: Green-B#green-a }
   - { name: green-c, type: direct, args: Green-C#green-a }
+  - { name: ex-a, type: direct, args: EX-A#green-a }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -37,6 +41,7 @@ nodes:
   interfaces:
   - { name: green-a, type: direct, args: Green-A#green-b }
   - { name: green-c, type: direct, args: Green-C#green-b }
+  - { name: ex-b, type: direct, args: EX-B#green-b }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -45,6 +50,32 @@ nodes:
   interfaces:
   - { name: green-b, type: direct, args: Green-B#green-c }
   - { name: green-a, type: direct, args: Green-A#green-c }
+  - { name: ex-c, type: direct, args: EX-C#green-c }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+
+- name: EX-A
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: blue-a, type: direct, args: Blue-A#ex-a }
+  - { name: green-a, type: direct, args: Green-A#ex-a }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+- name: EX-B
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: blue-b, type: direct, args: Blue-B#ex-b }
+  - { name: green-b, type: direct, args: Green-B#ex-b }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+- name: EX-C
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: blue-c, type: direct, args: Blue-C#ex-c }
+  - { name: green-c, type: direct, args: Green-C#ex-c }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -60,18 +91,24 @@ node_configs:
       -c " no bgp default ipv4-unicast"
       -c " bgp confederation identifier 65000"
       -c " bgp confederation peers 64501 64502 64503 64601"
-      -c " neighbor BB peer-group"
-      -c " neighbor BB remote-as 64600"
-      -c " neighbor blue-b interface peer-group BB"
-      -c " neighbor blue-c interface peer-group BB"
+      -c " neighbor BB-BLUE peer-group"
+      -c " neighbor BB-BLUE remote-as 64600"
+      -c " neighbor EX-A peer-group"
+      -c " neighbor EX-A remote-as 64501"
+      -c " neighbor blue-b interface peer-group BB-BLUE"
+      -c " neighbor blue-c interface peer-group BB-BLUE"
+      -c " neighbor ex-a interface peer-group EX-A"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
       -c " address-family ipv6 unicast"
       -c "  network 2001:db8:6500::/48"
-      -c "  neighbor BB activate"
-      -c "  neighbor BB next-hop-self"
-      -c "  neighbor BB soft-reconfiguration inbound"
+      -c "  neighbor BB-BLUE activate"
+      -c "  neighbor BB-BLUE next-hop-self"
+      -c "  neighbor BB-BLUE soft-reconfiguration inbound"
+      -c "  neighbor EX-A activate"
+      -c "  neighbor EX-A next-hop-self"
+      -c "  neighbor EX-A soft-reconfiguration inbound"
 
 - name: Blue-B
   cmds:
@@ -83,18 +120,24 @@ node_configs:
       -c " no bgp default ipv4-unicast"
       -c " bgp confederation identifier 65000"
       -c " bgp confederation peers 64501 64502 64503 64601"
-      -c " neighbor BB peer-group"
-      -c " neighbor BB remote-as 64600"
-      -c " neighbor blue-a interface peer-group BB"
-      -c " neighbor blue-c interface peer-group BB"
+      -c " neighbor BB-BLUE peer-group"
+      -c " neighbor BB-BLUE remote-as 64600"
+      -c " neighbor EX-B peer-group"
+      -c " neighbor EX-B remote-as 64502"
+      -c " neighbor blue-a interface peer-group BB-BLUE"
+      -c " neighbor blue-c interface peer-group BB-BLUE"
+      -c " neighbor ex-b interface peer-group EX-B"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
       -c " address-family ipv6 unicast"
       -c "  network 2001:db8:6500::/48"
-      -c "  neighbor BB activate"
-      -c "  neighbor BB next-hop-self"
-      -c "  neighbor BB soft-reconfiguration inbound"
+      -c "  neighbor BB-BLUE activate"
+      -c "  neighbor BB-BLUE next-hop-self"
+      -c "  neighbor BB-BLUE soft-reconfiguration inbound"
+      -c "  neighbor EX-B activate"
+      -c "  neighbor EX-B next-hop-self"
+      -c "  neighbor EX-B soft-reconfiguration inbound"
 
 - name: Blue-C
   cmds:
@@ -106,84 +149,198 @@ node_configs:
       -c " no bgp default ipv4-unicast"
       -c " bgp confederation identifier 65000"
       -c " bgp confederation peers 64501 64502 64503 64601"
-      -c " neighbor BB peer-group"
-      -c " neighbor BB remote-as 64600"
-      -c " neighbor blue-b interface peer-group BB"
-      -c " neighbor blue-a interface peer-group BB"
+      -c " neighbor BB-BLUE peer-group"
+      -c " neighbor BB-BLUE remote-as 64600"
+      -c " neighbor EX-C peer-group"
+      -c " neighbor EX-C remote-as 64503"
+      -c " neighbor blue-b interface peer-group BB-BLUE"
+      -c " neighbor blue-a interface peer-group BB-BLUE"
+      -c " neighbor ex-c interface peer-group EX-C"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
       -c " address-family ipv6 unicast"
       -c "  network 2001:db8:6500::/48"
-      -c "  neighbor BB activate"
-      -c "  neighbor BB next-hop-self"
-      -c "  neighbor BB soft-reconfiguration inbound"
+      -c "  neighbor BB-BLUE activate"
+      -c "  neighbor BB-BLUE next-hop-self"
+      -c "  neighbor BB-BLUE soft-reconfiguration inbound"
+      -c "  neighbor EX-C activate"
+      -c "  neighbor EX-C next-hop-self"
+      -c "  neighbor EX-C soft-reconfiguration inbound"
       
 - name: Green-A
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "router bgp 64600"
+      -c "router bgp 64601"
       -c " bgp router-id 10.64.61.1"
       -c " no bgp ebgp-requires-policy"
       -c " no bgp default ipv4-unicast"
       -c " bgp confederation identifier 65000"
-      -c " bgp confederation peers 64501 64502 64503 64601"
-      -c " neighbor BB peer-group"
-      -c " neighbor BB remote-as 64600"
-      -c " neighbor green-b interface peer-group BB"
-      -c " neighbor green-c interface peer-group BB"
+      -c " bgp confederation peers 64501 64502 64503 64600"
+      -c " neighbor BB-GREEN peer-group"
+      -c " neighbor BB-GREEN remote-as 64601"
+      -c " neighbor EX-A peer-group"
+      -c " neighbor EX-A remote-as 64501"
+      -c " neighbor green-b interface peer-group BB-GREEN"
+      -c " neighbor green-c interface peer-group BB-GREEN"
+      -c " neighbor ex-a interface peer-group EX-A"
   - cmd: >-
       vtysh -c "conf t"
-      -c "router bgp 64600"
+      -c "router bgp 64601"
       -c " address-family ipv6 unicast"
       -c "  network 2001:db8:6500::/48"
-      -c "  neighbor BB activate"
-      -c "  neighbor BB next-hop-self"
-      -c "  neighbor BB soft-reconfiguration inbound"
+      -c "  neighbor BB-GREEN activate"
+      -c "  neighbor BB-GREEN next-hop-self"
+      -c "  neighbor BB-GREEN soft-reconfiguration inbound"
+      -c "  neighbor EX-A activate"
+      -c "  neighbor EX-A next-hop-self"
+      -c "  neighbor EX-A soft-reconfiguration inbound"
 
 - name: Green-B
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "router bgp 64600"
+      -c "router bgp 64601"
       -c " bgp router-id 10.64.61.2"
       -c " no bgp ebgp-requires-policy"
       -c " no bgp default ipv4-unicast"
       -c " bgp confederation identifier 65000"
-      -c " bgp confederation peers 64501 64502 64503 64601"
-      -c " neighbor BB peer-group"
-      -c " neighbor BB remote-as 64600"
-      -c " neighbor green-a peer-group BB"
-      -c " neighbor green-c peer-group BB"
+      -c " bgp confederation peers 64501 64502 64503 64600"
+      -c " neighbor BB-GREEN peer-group"
+      -c " neighbor BB-GREEN remote-as 64601"
+      -c " neighbor EX-B peer-group"
+      -c " neighbor EX-B remote-as 64502"
+      -c " neighbor green-a interface peer-group BB-GREEN"
+      -c " neighbor green-c interface peer-group BB-GREEN"
+      -c " neighbor ex-b interface peer-group EX-B"
   - cmd: >-
       vtysh -c "conf t"
-      -c "router bgp 64600"
+      -c "router bgp 64601"
       -c " address-family ipv6 unicast"
       -c "  network 2001:db8:6500::/48"
-      -c "  neighbor BB activate"
-      -c "  neighbor BB next-hop-self"
-      -c "  neighbor BB soft-reconfiguration inbound"
+      -c "  neighbor BB-GREEN activate"
+      -c "  neighbor BB-GREEN next-hop-self"
+      -c "  neighbor BB-GREEN soft-reconfiguration inbound"
+      -c "  neighbor EX-B activate"
+      -c "  neighbor EX-B next-hop-self"
+      -c "  neighbor EX-B soft-reconfiguration inbound"
 
 - name: Green-C
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "router bgp 64600"
+      -c "router bgp 64601"
       -c " bgp router-id 10.64.61.3"
       -c " no bgp ebgp-requires-policy"
       -c " no bgp default ipv4-unicast"
       -c " bgp confederation identifier 65000"
-      -c " bgp confederation peers 64501 64502 64503 64601"
-      -c " neighbor BB peer-group"
-      -c " neighbor BB remote-as 64600"
-      -c " neighbor green-a peer-group BB"
-      -c " neighbor green-b peer-group BB"
+      -c " bgp confederation peers 64501 64502 64503 64600"
+      -c " neighbor BB-GREEN peer-group"
+      -c " neighbor BB-GREEN remote-as 64601"
+      -c " neighbor EX-C peer-group"
+      -c " neighbor EX-C remote-as 64503"
+      -c " neighbor green-a interface peer-group BB-GREEN"
+      -c " neighbor green-b interface peer-group BB-GREEN"
+      -c " neighbor ex-c interface peer-group EX-C"
   - cmd: >-
       vtysh -c "conf t"
-      -c "router bgp 64600"
+      -c "router bgp 64601"
       -c " address-family ipv6 unicast"
       -c "  network 2001:db8:6500::/48"
-      -c "  neighbor BB activate"
-      -c "  neighbor BB next-hop-self"
-      -c "  neighbor BB soft-reconfiguration inbound"
+      -c "  neighbor BB-GREEN activate"
+      -c "  neighbor BB-GREEN next-hop-self"
+      -c "  neighbor BB-GREEN soft-reconfiguration inbound"
+      -c "  neighbor EX-C activate"
+      -c "  neighbor EX-C next-hop-self"
+      -c "  neighbor EX-C soft-reconfiguration inbound"
+
+- name: EX-A
+  cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64501"
+      -c " bgp router-id 10.64.50.1"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp suppress-duplicates"
+      -c " no bgp network import-check"
+      -c " bgp confederation identifier 65000"
+      -c " bgp confederation peers 64502 64503 64600 64601"
+      -c " neighbor BB-BLUE peer-group"
+      -c " neighbor BB-BLUE remote-as 64600"
+      -c " neighbor BB-GREEN peer-group"
+      -c " neighbor BB-GREEN remote-as 64601"
+      -c " neighbor blue-a interface peer-group BB-BLUE"
+      -c " neighbor green-a interface peer-group BB-GREEN"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64501"
+      -c " address-family ipv6 unicast"
+      -c "  redistribute connected"
+      -c "  neighbor BB-BLUE activate"
+      -c "  neighbor BB-BLUE next-hop-self"
+      -c "  neighbor BB-BLUE soft-reconfiguration inbound"
+      -c "  neighbor BB-GREEN activate"
+      -c "  neighbor BB-GREEN next-hop-self"
+      -c "  neighbor BB-GREEN soft-reconfiguration inbound"
+
+- name: EX-B
+  cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64502"
+      -c " bgp router-id 10.64.50.2"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp default ipv4-unicast"
+      -c " no bgp suppress-duplicates"
+      -c " no bgp network import-check"
+      -c " bgp confederation identifier 65000"
+      -c " bgp confederation peers 64501 64503 64600 64601"
+      -c " neighbor BB-BLUE peer-group"
+      -c " neighbor BB-BLUE remote-as 64600"
+      -c " neighbor BB-GREEN peer-group"
+      -c " neighbor BB-GREEN remote-as 64601"
+      -c " neighbor blue-b interface peer-group BB-BLUE"
+      -c " neighbor green-b interface peer-group BB-GREEN"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64502"
+      -c " address-family ipv6 unicast"
+      -c "  redistribute connected"
+      -c "  neighbor BB-BLUE activate"
+      -c "  neighbor BB-BLUE next-hop-self"
+      -c "  neighbor BB-BLUE soft-reconfiguration inbound"
+      -c "  neighbor BB-GREEN activate"
+      -c "  neighbor BB-GREEN next-hop-self"
+      -c "  neighbor BB-GREEN soft-reconfiguration inbound"
+
+- name: EX-C
+  cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64503"
+      -c " bgp router-id 10.64.50.3"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp default ipv4-unicast"
+      -c " no bgp suppress-duplicates"
+      -c " no bgp network import-check"
+      -c " bgp confederation identifier 65000"
+      -c " bgp confederation peers 64501 64502 64600 64601"
+      -c " neighbor BB-BLUE peer-group"
+      -c " neighbor BB-BLUE remote-as 64600"
+      -c " neighbor BB-GREEN peer-group"
+      -c " neighbor BB-GREEN remote-as 64601"
+      -c " neighbor blue-c interface peer-group BB-BLUE"
+      -c " neighbor green-c interface peer-group BB-GREEN"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64503"
+      -c " address-family ipv6 unicast"
+      -c "  redistribute connected"
+      -c "  neighbor BB-BLUE activate"
+      -c "  neighbor BB-BLUE next-hop-self"
+      -c "  neighbor BB-BLUE soft-reconfiguration inbound"
+      -c "  neighbor BB-GREEN activate"
+      -c "  neighbor BB-GREEN next-hop-self"
+      -c "  neighbor BB-GREEN soft-reconfiguration inbound"
