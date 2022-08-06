@@ -1,5 +1,5 @@
 resources:
-- manager.yaml
+- bg-switcher-manager.yaml
 
 generatorOptions:
   disableNameSuffixHash: true

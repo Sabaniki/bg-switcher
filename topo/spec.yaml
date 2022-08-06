@@ -1,3 +1,7 @@
+postinit:
+- cmds:
+  - cmd: docker compose down && docker compose up -d
+
 nodes:
 - name: Blue-A
   image: sabaniki/frr:latest

@@ -32,7 +32,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	seccampv1 "github.com/Sabaniki/bg-switcher/api/v1"
-	"github.com/Sabaniki/bg-switcher/controllers"
+	controllers "github.com/Sabaniki/bg-switcher/controllers/bg-switcherlet"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -89,7 +89,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controllers.BgSwitcherReconciler{
+	if err = (&controllers.BgSwitcherLetReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {

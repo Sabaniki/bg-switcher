@@ -1,0 +1,73 @@
+version: '3'
+services:
+  Blue-A:
+    restart: always
+    image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
+    privileged: true
+    user: "0:0"
+    network_mode: host
+    volumes:
+      - /home/sabaniki/.kube/config:/root/.kube/config
+      - /var/run:/var/run
+      - /proc:/proc
+      - /etc/netns:/etc/netns
+
+  Blue-B:
+    restart: always
+    image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
+    privileged: true
+    user: "0:0"
+    network_mode: host
+    volumes:
+      - /home/sabaniki/.kube/config:/root/.kube/config
+      - /var/run:/var/run
+      - /proc:/proc
+      - /etc/netns:/etc/netns
+
+  Blue-C:
+    restart: always
+    image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
+    privileged: true
+    user: "0:0"
+    network_mode: host
+    volumes:
+      - /home/sabaniki/.kube/config:/root/.kube/config
+      - /var/run:/var/run
+      - /proc:/proc
+      - /etc/netns:/etc/netns
+
+  Green-A:
+    restart: always
+    image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
+    privileged: true
+    user: "0:0"
+    network_mode: host
+    volumes:
+      - /home/sabaniki/.kube/config:/root/.kube/config
+      - /var/run:/var/run
+      - /proc:/proc
+      - /etc/netns:/etc/netns
+
+  Green-B:
+    restart: always
+    image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
+    privileged: true
+    user: "0:0"
+    network_mode: host
+    volumes:
+      - /home/sabaniki/.kube/config:/root/.kube/config
+      - /var/run:/var/run
+      - /proc:/proc
+      - /etc/netns:/etc/netns
+
+  Green-C:
+    restart: always
+    image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
+    privileged: true
+    user: "0:0"
+    network_mode: host
+    volumes:
+      - /home/sabaniki/.kube/config:/root/.kube/config
+      - /var/run:/var/run
+      - /proc:/proc
+      - /etc/netns:/etc/netns
