@@ -90,6 +90,14 @@ CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
 controller-gen: ## Download controller-gen locally if necessary.
 	$(call go-get-tool,$(CONTROLLER_GEN),sigs.k8s.io/controller-tools/cmd/controller-gen@v0.8.0)
 
+.PHONY: tinet-upconf
+tinet-upconf:
+	cd topo && tinet upconf | sudo sh -x
+
+.PHONY: tinet-down
+tinet-down:
+	cd topo && tinet down | sudo sh -x && docker compose down
+
 KUSTOMIZE = $(shell pwd)/bin/kustomize
 .PHONY: kustomize
 kustomize: ## Download kustomize locally if necessary.

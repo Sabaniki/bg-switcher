@@ -11,4 +11,11 @@
 - 徐々に切り替えるのが本来だけど，今回はズバっと一気に切り替える
 
 [設計資料](./memo/design.md)
+
 [TODO](./memo/todo.md)
+
+## 環境の起動
+`make tinet-upconf`
+
+## 環境の削除
+`make tinet-down`

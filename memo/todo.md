@@ -18,3 +18,9 @@ Command Output: failed to save image: invalid output path: directory "/tmp/image
 
   - [issueを見つけた](https://github.com/kubernetes-sigs/kind/issues/2535)
   - docker を get.docker.com から再インストールでかいけつ
+
+- [ ] postfini が本当に使えないか調べる
+  - 分散コントローラは docker-compose で上げることにした
+  - tinet の up/down と連動してほしい
+  - up は postinit が動く
+  - down の postfini は動いていない気がする

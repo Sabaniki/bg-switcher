@@ -1,6 +1,11 @@
 postinit:
 - cmds:
-  - cmd: docker compose down && docker compose up -d
+  - cmd: docker compose up -d
+
+# postfini:
+# - cmds:
+#   - cmd: docker compose down
+# not work↑
 
 nodes:
 - name: Blue-A
