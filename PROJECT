@@ -1,0 +1,6 @@
+domain: sabaniki.vsix.wide.ad.jp
+layout:
+- go.kubebuilder.io/v3
+projectName: bg-switcher
+repo: github.com/Sabaniki/bg-switcher
+version: "3"
