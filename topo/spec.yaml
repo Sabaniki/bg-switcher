@@ -143,6 +143,10 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
+      -c "interface lo"
+      -c " ipv6 address 2001:db8:6500:100:ace::1/128"
+  - cmd: >-
+      vtysh -c "conf t"
       -c "router bgp 64600"
       -c " bgp router-id 10.64.60.1"
       -c " no bgp ebgp-requires-policy"
@@ -153,23 +157,41 @@ node_configs:
       -c " neighbor BB-BLUE remote-as 64600"
       -c " neighbor EX-A peer-group"
       -c " neighbor EX-A remote-as 64501"
+      -c " neighbor CONSUMERS peer-group"
       -c " neighbor blue-b interface peer-group BB-BLUE"
       -c " neighbor blue-c interface peer-group BB-BLUE"
       -c " neighbor ex-a interface peer-group EX-A"
+      -c " neighbor ce-a interface peer-group CONSUMERS"
+      -c " neighbor ce-a interface remote-as 64701"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
       -c " address-family ipv6 unicast"
+      -c "  network ::/0"
       -c "  network 2001:db8:6500::/48"
+      -c "  network 2001:db8:6500:100:ace::1/128"
       -c "  neighbor BB-BLUE activate"
       -c "  neighbor BB-BLUE next-hop-self"
       -c "  neighbor BB-BLUE soft-reconfiguration inbound"
       -c "  neighbor EX-A activate"
       -c "  neighbor EX-A next-hop-self"
       -c "  neighbor EX-A soft-reconfiguration inbound"
+      -c "  neighbor EX-A route-map MED_LEVEL out"
+      -c "  neighbor CONSUMERS activate"
+      -c "  neighbor CONSUMERS next-hop-self"
+      -c "  neighbor CONSUMERS soft-reconfiguration inbound"
+      -c "  neighbor CONSUMERS route-map MED_LEVEL out"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map MED_LEVEL permit 5"
+      -c " set metric 0"
 
 - name: Blue-B
   cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface lo"
+      -c " ipv6 address 2001:db8:6500:100:cafe::1/128"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
@@ -182,23 +204,41 @@ node_configs:
       -c " neighbor BB-BLUE remote-as 64600"
       -c " neighbor EX-B peer-group"
       -c " neighbor EX-B remote-as 64502"
+      -c " neighbor CONSUMERS peer-group"
       -c " neighbor blue-a interface peer-group BB-BLUE"
       -c " neighbor blue-c interface peer-group BB-BLUE"
       -c " neighbor ex-b interface peer-group EX-B"
+      -c " neighbor ce-b interface peer-group CONSUMERS"
+      -c " neighbor ce-b interface remote-as 64702"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
       -c " address-family ipv6 unicast"
+      -c "  network ::/0"
       -c "  network 2001:db8:6500::/48"
+      -c "  network 2001:db8:6500:100:cafe::1/128"
       -c "  neighbor BB-BLUE activate"
       -c "  neighbor BB-BLUE next-hop-self"
       -c "  neighbor BB-BLUE soft-reconfiguration inbound"
       -c "  neighbor EX-B activate"
       -c "  neighbor EX-B next-hop-self"
       -c "  neighbor EX-B soft-reconfiguration inbound"
+      -c "  neighbor EX-B route-map MED_LEVEL out"
+      -c "  neighbor CONSUMERS activate"
+      -c "  neighbor CONSUMERS next-hop-self"
+      -c "  neighbor CONSUMERS soft-reconfiguration inbound"
+      -c "  neighbor CONSUMERS route-map MED_LEVEL out"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map MED_LEVEL permit 5"
+      -c " set metric 0"
 
 - name: Blue-C
   cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface lo"
+      -c " ipv6 address 2001:db8:6500:100:beef::1/128"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
@@ -211,23 +251,41 @@ node_configs:
       -c " neighbor BB-BLUE remote-as 64600"
       -c " neighbor EX-C peer-group"
       -c " neighbor EX-C remote-as 64503"
+      -c " neighbor CONSUMERS peer-group"
       -c " neighbor blue-b interface peer-group BB-BLUE"
       -c " neighbor blue-a interface peer-group BB-BLUE"
       -c " neighbor ex-c interface peer-group EX-C"
+      -c " neighbor ce-c interface peer-group CONSUMERS"
+      -c " neighbor ce-c interface remote-as 64703"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
       -c " address-family ipv6 unicast"
+      -c "  network ::/0"
       -c "  network 2001:db8:6500::/48"
+      -c "  network 2001:db8:6500:100:beef::1/128"
       -c "  neighbor BB-BLUE activate"
       -c "  neighbor BB-BLUE next-hop-self"
       -c "  neighbor BB-BLUE soft-reconfiguration inbound"
       -c "  neighbor EX-C activate"
       -c "  neighbor EX-C next-hop-self"
       -c "  neighbor EX-C soft-reconfiguration inbound"
+      -c "  neighbor EX-C route-map MED_LEVEL out"
+      -c "  neighbor CONSUMERS activate"
+      -c "  neighbor CONSUMERS next-hop-self"
+      -c "  neighbor CONSUMERS soft-reconfiguration inbound"
+      -c "  neighbor CONSUMERS route-map MED_LEVEL out"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map MED_LEVEL permit 5"
+      -c " set metric 0"
       
 - name: Green-A
   cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface lo"
+      -c " ipv6 address 2001:db8:6500:200:ace::1/128"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64601"
@@ -240,23 +298,41 @@ node_configs:
       -c " neighbor BB-GREEN remote-as 64601"
       -c " neighbor EX-A peer-group"
       -c " neighbor EX-A remote-as 64501"
+      -c " neighbor CONSUMERS peer-group"
       -c " neighbor green-b interface peer-group BB-GREEN"
       -c " neighbor green-c interface peer-group BB-GREEN"
       -c " neighbor ex-a interface peer-group EX-A"
+      -c " neighbor ce-a interface peer-group CONSUMERS"
+      -c " neighbor ce-a interface remote-as 64701"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64601"
       -c " address-family ipv6 unicast"
+      -c "  network ::/0"
       -c "  network 2001:db8:6500::/48"
+      -c "  network 2001:db8:6500:200:ace::1/128"
       -c "  neighbor BB-GREEN activate"
       -c "  neighbor BB-GREEN next-hop-self"
       -c "  neighbor BB-GREEN soft-reconfiguration inbound"
       -c "  neighbor EX-A activate"
       -c "  neighbor EX-A next-hop-self"
       -c "  neighbor EX-A soft-reconfiguration inbound"
+      -c "  neighbor EX-A route-map MED_LEVEL out"
+      -c "  neighbor CONSUMERS activate"
+      -c "  neighbor CONSUMERS next-hop-self"
+      -c "  neighbor CONSUMERS soft-reconfiguration inbound"
+      -c "  neighbor CONSUMERS route-map MED_LEVEL out"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map MED_LEVEL permit 5"
+      -c " set metric 10"
 
 - name: Green-B
   cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface lo"
+      -c " ipv6 address 2001:db8:6500:200:cafe::1/128"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64601"
@@ -269,23 +345,41 @@ node_configs:
       -c " neighbor BB-GREEN remote-as 64601"
       -c " neighbor EX-B peer-group"
       -c " neighbor EX-B remote-as 64502"
+      -c " neighbor CONSUMERS peer-group"
       -c " neighbor green-a interface peer-group BB-GREEN"
       -c " neighbor green-c interface peer-group BB-GREEN"
       -c " neighbor ex-b interface peer-group EX-B"
+      -c " neighbor ce-b interface peer-group CONSUMERS"
+      -c " neighbor ce-b interface remote-as 64702"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64601"
       -c " address-family ipv6 unicast"
+      -c "  network ::/0"
       -c "  network 2001:db8:6500::/48"
+      -c "  network 2001:db8:6500:200:cafe::1/128"
       -c "  neighbor BB-GREEN activate"
       -c "  neighbor BB-GREEN next-hop-self"
       -c "  neighbor BB-GREEN soft-reconfiguration inbound"
       -c "  neighbor EX-B activate"
       -c "  neighbor EX-B next-hop-self"
       -c "  neighbor EX-B soft-reconfiguration inbound"
+      -c "  neighbor EX-B route-map MED_LEVEL out"
+      -c "  neighbor CONSUMERS activate"
+      -c "  neighbor CONSUMERS next-hop-self"
+      -c "  neighbor CONSUMERS soft-reconfiguration inbound"
+      -c "  neighbor CONSUMERS route-map MED_LEVEL out"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map MED_LEVEL permit 5"
+      -c " set metric 10"
 
 - name: Green-C
   cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface lo"
+      -c " ipv6 address 2001:db8:6500:200:beef::1/128"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64601"
@@ -298,23 +392,41 @@ node_configs:
       -c " neighbor BB-GREEN remote-as 64601"
       -c " neighbor EX-C peer-group"
       -c " neighbor EX-C remote-as 64503"
+      -c " neighbor CONSUMERS peer-group"
       -c " neighbor green-a interface peer-group BB-GREEN"
       -c " neighbor green-b interface peer-group BB-GREEN"
       -c " neighbor ex-c interface peer-group EX-C"
+      -c " neighbor ce-c interface peer-group CONSUMERS"
+      -c " neighbor ce-c interface remote-as 64703"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64601"
       -c " address-family ipv6 unicast"
+      -c "  network ::/0"
       -c "  network 2001:db8:6500::/48"
+      -c "  network 2001:db8:6500:200:beef:1/128"
       -c "  neighbor BB-GREEN activate"
       -c "  neighbor BB-GREEN next-hop-self"
       -c "  neighbor BB-GREEN soft-reconfiguration inbound"
       -c "  neighbor EX-C activate"
       -c "  neighbor EX-C next-hop-self"
       -c "  neighbor EX-C soft-reconfiguration inbound"
+      -c "  neighbor EX-C route-map MED_LEVEL out"
+      -c "  neighbor CONSUMERS activate"
+      -c "  neighbor CONSUMERS next-hop-self"
+      -c "  neighbor CONSUMERS soft-reconfiguration inbound"
+      -c "  neighbor CONSUMERS route-map MED_LEVEL out"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map MED_LEVEL permit 5"
+      -c " set metric 10"
 
 - name: EX-A
   cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface lo"
+      -c " ipv6 address 2001:db8:6500:6451::1/128"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64501"
@@ -347,6 +459,10 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
+      -c "interface lo"
+      -c " ipv6 address 2001:db8:6500:6452::1/128"
+  - cmd: >-
+      vtysh -c "conf t"
       -c "router bgp 64502"
       -c " bgp router-id 10.64.50.2"
       -c " no bgp ebgp-requires-policy"
@@ -377,6 +493,10 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
+      -c "interface lo"
+      -c " ipv6 address 2001:db8:6500:6453::1/128"
+  - cmd: >-
+      vtysh -c "conf t"
       -c "router bgp 64503"
       -c " bgp router-id 10.64.50.3"
       -c " no bgp ebgp-requires-policy"
@@ -404,7 +524,7 @@ node_configs:
       -c "  neighbor BB-GREEN soft-reconfiguration inbound"
 
 - name: CE-A
-  cmds::
+  cmds:
   - cmd: >-
       vtysh -c "conf t"
       -c "interface cm-a"
@@ -429,7 +549,7 @@ node_configs:
       -c "  neighbor BB activate"
       -c "  neighbor BB soft-reconfiguration inbound"
 - name: CE-B
-  cmds::
+  cmds:
   - cmd: >-
       vtysh -c "conf t"
       -c "interface cm-b"
@@ -444,8 +564,8 @@ node_configs:
       -c " no bgp network import-check"
       -c " neighbor BB peer-group"
       -c " neighbor BB remote-as 65000"
-      -c " neighbor blue-a interface peer-group BB"
-      -c " neighbor green-a interface peer-group BB"
+      -c " neighbor blue-b interface peer-group BB"
+      -c " neighbor green-b interface peer-group BB"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64702"
@@ -454,7 +574,7 @@ node_configs:
       -c "  neighbor BB activate"
       -c "  neighbor BB soft-reconfiguration inbound"
 - name: CE-C
-  cmds::
+  cmds:
   - cmd: >-
       vtysh -c "conf t"
       -c "interface cm-c"
@@ -469,8 +589,8 @@ node_configs:
       -c " no bgp network import-check"
       -c " neighbor BB peer-group"
       -c " neighbor BB remote-as 65000"
-      -c " neighbor blue-a interface peer-group BB"
-      -c " neighbor green-a interface peer-group BB"
+      -c " neighbor blue-c interface peer-group BB"
+      -c " neighbor green-c interface peer-group BB"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64703"
@@ -483,7 +603,7 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "interface cm-a"
+      -c "interface ce-a"
       -c " ipv6 address 2001:db8:6500:6471::2/64"
   - cmd: >-
       vtysh -c "conf t"
@@ -492,7 +612,7 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "interface cm-b"
+      -c "interface ce-b"
       -c " ipv6 address 2001:db8:6500:6472::2/64"
   - cmd: >-
       vtysh -c "conf t"
@@ -501,7 +621,7 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "interface cm-c"
+      -c "interface ce-c"
       -c " ipv6 address 2001:db8:6500:6473::2/64"
   - cmd: >-
       vtysh -c "conf t"
