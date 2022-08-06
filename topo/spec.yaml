@@ -5,6 +5,7 @@ nodes:
   - { name: blue-b, type: direct, args: Blue-B#blue-a }
   - { name: blue-c, type: direct, args: Blue-C#blue-a }
   - { name: ex-a, type: direct, args: EX-A#blue-a }
+  - { name: ce-a, type: direct, args: CE-A#blue-a }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -14,6 +15,7 @@ nodes:
   - { name: blue-a, type: direct, args: Blue-A#blue-b }
   - { name: blue-c, type: direct, args: Blue-C#blue-b }
   - { name: ex-b, type: direct, args: EX-B#blue-b }
+  - { name: ce-b, type: direct, args: CE-B#blue-b }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -23,6 +25,7 @@ nodes:
   - { name: blue-b, type: direct, args: Blue-B#blue-c }
   - { name: blue-a, type: direct, args: Blue-A#blue-c }
   - { name: ex-c, type: direct, args: EX-C#blue-c }
+  - { name: ce-c, type: direct, args: CE-C#blue-c }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -33,6 +36,7 @@ nodes:
   - { name: green-b, type: direct, args: Green-B#green-a }
   - { name: green-c, type: direct, args: Green-C#green-a }
   - { name: ex-a, type: direct, args: EX-A#green-a }
+  - { name: ce-a, type: direct, args: CE-A#green-a }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -42,6 +46,8 @@ nodes:
   - { name: green-a, type: direct, args: Green-A#green-b }
   - { name: green-c, type: direct, args: Green-C#green-b }
   - { name: ex-b, type: direct, args: EX-B#green-b }
+  - { name: ce-b, type: direct, args: CE-B#green-b }
+  sysctls:
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -51,6 +57,8 @@ nodes:
   - { name: green-b, type: direct, args: Green-B#green-c }
   - { name: green-a, type: direct, args: Green-A#green-c }
   - { name: ex-c, type: direct, args: EX-C#green-c }
+  - { name: ce-c, type: direct, args: CE-C#green-c }
+  sysctls:
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -76,6 +84,56 @@ nodes:
   interfaces:
   - { name: blue-c, type: direct, args: Blue-C#ex-c }
   - { name: green-c, type: direct, args: Green-C#ex-c }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+
+- name: CE-A
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: blue-a, type: direct, args: Blue-A#ce-a }
+  - { name: green-a, type: direct, args: Green-A#ce-a }
+  - { name: cm-a, type: direct, args: CM-A#ce-a }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+- name: CE-B
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: blue-b, type: direct, args: Blue-B#ce-b }
+  - { name: green-b, type: direct, args: Green-B#ce-b }
+  - { name: cm-b, type: direct, args: CM-B#ce-b }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+- name: CE-C
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: blue-c, type: direct, args: Blue-C#ce-c }
+  - { name: green-c, type: direct, args: Green-C#ce-c }
+  - { name: cm-c, type: direct, args: CM-C#ce-c }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+
+- name: CM-A
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: ce-a, type: direct, args: CE-A#cm-a }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+- name: CM-B
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: ce-b, type: direct, args: CE-B#cm-b }
+  sysctls:
+  - sysctl: net.ipv6.conf.all.disable_ipv6=0
+  - sysctl: net.ipv6.conf.all.forwarding=1
+- name: CM-C
+  image: sabaniki/frr:latest
+  interfaces:
+  - { name: ce-c, type: direct, args: CE-C#cm-c }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -344,3 +402,107 @@ node_configs:
       -c "  neighbor BB-GREEN activate"
       -c "  neighbor BB-GREEN next-hop-self"
       -c "  neighbor BB-GREEN soft-reconfiguration inbound"
+
+- name: CE-A
+  cmds::
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface cm-a"
+      -c " ipv6 address 2001:db8:6500:6471::1/64"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64701"
+      -c " bgp router-id 10.64.70.1"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp suppress-duplicates"
+      -c " no bgp network import-check"
+      -c " neighbor BB peer-group"
+      -c " neighbor BB remote-as 65000"
+      -c " neighbor blue-a interface peer-group BB"
+      -c " neighbor green-a interface peer-group BB"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64701"
+      -c " address-family ipv6 unicast"
+      -c "  redistribute connected"
+      -c "  neighbor BB activate"
+      -c "  neighbor BB soft-reconfiguration inbound"
+- name: CE-B
+  cmds::
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface cm-b"
+      -c " ipv6 address 2001:db8:6500:6472::1/64"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64702"
+      -c " bgp router-id 10.64.70.2"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp suppress-duplicates"
+      -c " no bgp network import-check"
+      -c " neighbor BB peer-group"
+      -c " neighbor BB remote-as 65000"
+      -c " neighbor blue-a interface peer-group BB"
+      -c " neighbor green-a interface peer-group BB"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64702"
+      -c " address-family ipv6 unicast"
+      -c "  redistribute connected"
+      -c "  neighbor BB activate"
+      -c "  neighbor BB soft-reconfiguration inbound"
+- name: CE-C
+  cmds::
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface cm-c"
+      -c " ipv6 address 2001:db8:6500:6473::1/64"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64703"
+      -c " bgp router-id 10.64.70.3"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp ebgp-requires-policy"
+      -c " no bgp suppress-duplicates"
+      -c " no bgp network import-check"
+      -c " neighbor BB peer-group"
+      -c " neighbor BB remote-as 65000"
+      -c " neighbor blue-a interface peer-group BB"
+      -c " neighbor green-a interface peer-group BB"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "router bgp 64703"
+      -c " address-family ipv6 unicast"
+      -c "  redistribute connected"
+      -c "  neighbor BB activate"
+      -c "  neighbor BB soft-reconfiguration inbound"
+
+- name: CM-A
+  cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface cm-a"
+      -c " ipv6 address 2001:db8:6500:6471::2/64"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "ip route ::/0 2001:db8:6500:6471::1"
+- name: CM-B
+  cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface cm-b"
+      -c " ipv6 address 2001:db8:6500:6472::2/64"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "ip route ::/0 2001:db8:6500:6472::1"
+- name: CM-C
+  cmds:
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "interface cm-c"
+      -c " ipv6 address 2001:db8:6500:6473::2/64"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "ip route ::/0 2001:db8:6500:6473::1"
