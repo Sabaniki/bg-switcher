@@ -3,4 +3,14 @@ layout:
 - go.kubebuilder.io/v3
 projectName: bg-switcher
 repo: github.com/Sabaniki/bg-switcher
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: sabaniki.vsix.wide.ad.jp
+  group: seccamp
+  kind: BgSwitcher
+  path: github.com/Sabaniki/bg-switcher/api/v1
+  version: v1
 version: "3"

@@ -1,0 +1,33 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - seccamp.sabaniki.vsix.wide.ad.jp
+  resources:
+  - bgswitchers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - seccamp.sabaniki.vsix.wide.ad.jp
+  resources:
+  - bgswitchers/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - seccamp.sabaniki.vsix.wide.ad.jp
+  resources:
+  - bgswitchers/status
+  verbs:
+  - get
+  - patch
+  - update
