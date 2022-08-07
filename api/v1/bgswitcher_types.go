@@ -25,17 +25,14 @@ import (
 
 // BgSwitcherSpec defines the desired state of BgSwitcher
 type BgSwitcherSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of BgSwitcher. Edit bgswitcher_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Color  string `json:"color"`
+	IsMain bool   `json:"isMain"`
 }
 
 // BgSwitcherStatus defines the observed state of BgSwitcher
 type BgSwitcherStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	Color string `json:"color"`
+	Med   int    `json:"med"`
 }
 
 //+kubebuilder:object:root=true

@@ -1,4 +1,5 @@
 # TODO
+## 環境構築
 - [x] change Makefile
 - [x] change manager
 - [x] 初期状態から変えていない suite_test が致命的な感じで落ちることの解決
@@ -24,3 +25,8 @@ Command Output: failed to save image: invalid output path: directory "/tmp/image
   - tinet の up/down と連動してほしい
   - up は postinit が動く
   - down の postfini は動いていない気がする
+
+## 開発
+### bg-switcheerlet
+### bg-switcher-controller
+### bg-switcher-group

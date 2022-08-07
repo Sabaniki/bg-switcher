@@ -137,17 +137,13 @@ status:
 - bg-switcher リソースを監視
 ```yaml
 spec:
-  bbrouter:
-    name: Green-A
-    color: green
-    isMainColor: false
+  color: green
+  isMain: false
 ```
 ```yaml
 status:
-  bbrouter:
-    name: Green-A
-    color: green
-    med: 10
+  color: green
+  med: 10
 ```
 
 ## bg-switcherlet

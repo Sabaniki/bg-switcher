@@ -1,6 +1,7 @@
 apiVersion: seccamp.sabaniki.vsix.wide.ad.jp/v1
 kind: BgSwitcher
 metadata:
-  name: bgswitcher-sample
+  name: blue-a
 spec:
-  # TODO(user): Add fields here
+  color: blue
+  isMain: true
