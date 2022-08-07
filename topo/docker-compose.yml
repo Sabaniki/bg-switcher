@@ -3,6 +3,8 @@ services:
   Blue-A:
     restart: always
     image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
+    environment:
+      - NAME="Blue-A"
     privileged: true
     user: "0:0"
     network_mode: host
@@ -15,6 +17,8 @@ services:
   Blue-B:
     restart: always
     image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
+    environment:
+      - NAME="Blue-B"
     privileged: true
     user: "0:0"
     network_mode: host
@@ -27,6 +31,8 @@ services:
   Blue-C:
     restart: always
     image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
+    environment:
+      - NAME="Blue-C"
     privileged: true
     user: "0:0"
     network_mode: host
@@ -39,6 +45,8 @@ services:
   Green-A:
     restart: always
     image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
+    environment:
+      - NAME="Green-A"
     privileged: true
     user: "0:0"
     network_mode: host
@@ -51,6 +59,8 @@ services:
   Green-B:
     restart: always
     image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
+    environment:
+      - NAME="Green-B"
     privileged: true
     user: "0:0"
     network_mode: host
@@ -63,6 +73,8 @@ services:
   Green-C:
     restart: always
     image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
+    environment:
+      - NAME="Green-C"
     privileged: true
     user: "0:0"
     network_mode: host
