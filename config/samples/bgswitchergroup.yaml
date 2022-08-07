@@ -3,15 +3,16 @@ kind: BgSwitcherGroup
 metadata:
   name: bgswitchergroup-sample
 spec:
-  groups:
-    - group:
-      color: blue
-      - bbrouter: blue-a
-      - bbrouter: blue-b
-      - bbrouter: blue-c
-    - group:
-      color: green
-      - bbrouter: green-a
-      - bbrouter: green-b
-      - bbrouter: green-c
+# ↓ miss 'g' is better.
+  Groups:
+    - color: blue
+      bbrouters:
+        - blue-a
+      # blue-b
+      # blue-c
+    - color: green
+      bbrouters:
+        - green-a
+      # green-b
+      # green-c
   mainColor: blue

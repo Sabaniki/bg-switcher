@@ -33,7 +33,7 @@ spec:
             type: object
           spec:
             properties:
-              colors:
+              Groups:
                 items:
                   properties:
                     bbrouters:
@@ -50,10 +50,28 @@ spec:
               mainColor:
                 type: string
             required:
-            - colors
+            - Groups
             - mainColor
             type: object
           status:
+            properties:
+              bbrouters:
+                items:
+                  properties:
+                    color:
+                      type: string
+                    created:
+                      type: boolean
+                    name:
+                      type: string
+                  required:
+                  - color
+                  - created
+                  - name
+                  type: object
+                type: array
+            required:
+            - bbrouters
             type: object
         type: object
     served: true
