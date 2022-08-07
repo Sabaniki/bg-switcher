@@ -1,6 +1,7 @@
 # Blue/Green Switcher
 ## 概要
 ![topo](./memo/topo.svg)
+![demo](memo/demo-v1.gif)
 - バックボーンネットワークでも Blue/Green デプロイメントがしたい！
     - 2 面の バックボーンネットワークを用意する
     - Blue をユーザが利用しているときは Green を開発する
