@@ -51,7 +51,7 @@ func (r *BgSwitcherLetReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	res := util.NewResult()
 	bgs := seccampv1.BgSwitcher{}
 	name := os.Getenv("NAME")
-	pp.Println("NAME", name)
+	// pp.Println("NAME", name)
 	if err := r.Get(ctx, req.NamespacedName, &bgs); err != nil {
 		if errors.IsNotFound(err) {
 			return ctrl.Result{}, nil
@@ -83,7 +83,48 @@ func (r *BgSwitcherLetReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		}
 		return ctrl.Result{}, nil
 	}
-	pp.Println(getMed(containerName))
+	med, err := getMed(containerName)
+	if err != nil {
+		log.Error(err, "msg", "line", util.LINE())
+		return ctrl.Result{}, err
+	}
+
+	changedMed := false
+	if bgs.Spec.IsMain && med != 0 {
+		setMed(containerName, 0)
+		changedMed = true
+	} else if !bgs.Spec.IsMain && med == 0 {
+		setMed(containerName, 10)
+		changedMed = true
+	}
+	if changedMed {
+		currentMed, err := getMed(containerName)
+		if err != nil {
+			log.Error(err, "msg", "line", util.LINE())
+			return ctrl.Result{}, err
+		}
+		bgs.Status.Med = currentMed
+		res.StatusUpdated = true
+	}
+
+	if bgs.Spec.Color != bgs.Status.Color {
+		bgs.Status.Color = bgs.Spec.Color
+		res.StatusUpdated = true
+	}
+
+	if res.SpecUpdated {
+		if err := r.Update(ctx, &bgs); err != nil {
+			log.Error(err, "msg", "line", util.LINE())
+			return ctrl.Result{}, err
+		}
+	}
+	if res.StatusUpdated {
+		if err := r.Status().Update(ctx, &bgs); err != nil {
+			log.Error(err, "msg", "line", util.LINE())
+			return ctrl.Result{}, err
+		}
+	}
+
 	return ctrl.Result{}, nil
 }
 
@@ -111,6 +152,15 @@ func getMed(containerName string) (int, error) {
 		return -1, err
 	}
 	return int(num), nil
+}
+
+func setMed(containerName string, med int) error {
+	err := executer.ExecCommand(
+		containerName,
+		"route-map MED_LEVEL permit 5",
+		"set metric "+strconv.Itoa(med),
+	)
+	return err
 }
 
 func convContainerName(rawName string) string {
