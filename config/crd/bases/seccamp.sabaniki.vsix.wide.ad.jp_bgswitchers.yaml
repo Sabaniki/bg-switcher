@@ -35,13 +35,24 @@ spec:
           spec:
             description: BgSwitcherSpec defines the desired state of BgSwitcher
             properties:
-              foo:
-                description: Foo is an example field of BgSwitcher. Edit bgswitcher_types.go
-                  to remove/update
+              color:
                 type: string
+              isMain:
+                type: boolean
+            required:
+            - color
+            - isMain
             type: object
           status:
             description: BgSwitcherStatus defines the observed state of BgSwitcher
+            properties:
+              color:
+                type: string
+              med:
+                type: integer
+            required:
+            - color
+            - med
             type: object
         type: object
     served: true

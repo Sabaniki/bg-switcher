@@ -89,3 +89,66 @@
         - 2001:db8:6520::1/128 ... EA-B (lo)
     - 2001:db8:6530::/48 ... EA-C
         - 2001:db8:6530::1/128 ... EA-C (lo)
+
+## コントローラ
+### bg-switcher-group
+- 中央コントローラ
+- bg-switcher-group リソースを監視
+- それらを元に bg-switcher のリソースを作成する
+```yaml
+spec:
+  colors:
+    - color: blue
+      - bbrouter: Blue-A
+      - bbrouter: Blue-B
+      - bbrouter: Blue-C
+    - color: green
+      - bbrouter: Green-A
+      - bbrouter: Green-B
+      - bbrouter: Green-C
+  mainColor: blue
+```
+```yaml
+status:
+  bbrouters:
+    - bbrouter: Blue-A
+      color: blue
+      created: true
+    - bbrouter: Blue-B
+      color: blue
+      created: true
+    - bbrouter: Blue-C
+      color: blue
+      created: true
+    - bbrouter: Green-A
+      color: green
+      created: true
+    - bbrouter: Green-B
+      color: green
+      created: true
+    - bbrouter: Green-C
+      color: green
+      created: true
+  mainColor: blue
+```
+
+### bg-switcher-controller
+- 中央コントローラ
+- bg-switcher リソースを監視
+```yaml
+spec:
+  color: green
+  isMain: false
+```
+```yaml
+status:
+  color: green
+  med: 10
+```
+
+## bg-switcherlet
+- 分散コントローラ
+  - bg-switcher リソースを監視
+    - `name:` に指定されている文字列と自分自身のコンテナ内の環境変数`$NAME`が同じ時だけリコンサイル
+    - `isMainColor`の真偽に応じて FRR 内の med を変更する
+    - 変更後の med を入れる

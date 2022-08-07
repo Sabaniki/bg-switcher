@@ -27,8 +27,8 @@ spec:
       containers:
         - command:
             - /usr/bin/bg-switcher-controller
-          image: ghcr.io/sabaniki/bg-switcher/bg-switcher-controller:latest
-          imagePullPolicy: Always
+          image: ghcr.io/sabaniki/seccamp/bg-switcher-controller:latest
+          imagePullPolicy: IfNotPresent
           name: manager
       serviceAccountName: controller-manager
       terminationGracePeriodSeconds: 10
