@@ -1,0 +1,17 @@
+apiVersion: seccamp.sabaniki.vsix.wide.ad.jp/v1
+kind: BgSwitcherGroup
+metadata:
+  name: bgswitchergroup-sample
+spec:
+  groups:
+    - group:
+      color: blue
+      - bbrouter: blue-a
+      - bbrouter: blue-b
+      - bbrouter: blue-c
+    - group:
+      color: green
+      - bbrouter: green-a
+      - bbrouter: green-b
+      - bbrouter: green-c
+  mainColor: blue

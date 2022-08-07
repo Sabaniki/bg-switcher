@@ -28,10 +28,11 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	seccampv1 "github.com/Sabaniki/bg-switcher/api/v1"
-	controllers "github.com/Sabaniki/bg-switcher/controllers/bg-switcherlet"
+	controllers "github.com/Sabaniki/bg-switcher/controllers/bg-switcher-controller"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -51,8 +52,8 @@ func main() {
 	var metricsAddr string
 	var enableLeaderElection bool
 	var probeAddr string
-	flag.StringVar(&metricsAddr, "metrics-bind-address", ":9091", "The address the metric endpoint binds to.")
-	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
+	flag.StringVar(&metricsAddr, "metrics-bind-address", ":8081", "The address the metric endpoint binds to.")
+	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8083", "The address the probe endpoint binds to.")
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
@@ -65,13 +66,11 @@ func main() {
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
-		Scheme: scheme,
-		// 後から無理やり書き換える
-		MetricsBindAddress: ":9091",
-		Port:               9443,
-		// 後から無理やり書き換える
-		HealthProbeBindAddress: ":8081",
-		LeaderElection:         enableLeaderElection,
+		Scheme:                 scheme,
+		MetricsBindAddress:     metricsAddr,
+		Port:                   9443,
+		HealthProbeBindAddress: probeAddr,
+		LeaderElection:         false,
 		LeaderElectionID:       "8981d30c.sabaniki.vsix.wide.ad.jp",
 		// LeaderElectionReleaseOnCancel defines if the leader should step down voluntarily
 		// when the Manager ends. This requires the binary to immediately end when the
@@ -90,7 +89,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controllers.BgSwitcherLetReconciler{
+	if err = (&controllers.BgSwitcherReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
@@ -99,14 +98,14 @@ func main() {
 	}
 	//+kubebuilder:scaffold:builder
 
-	// if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
-	// 	setupLog.Error(err, "unable to set up health check")
-	// 	os.Exit(1)
-	// }
-	// if err := mgr.AddReadyzCheck("readyz", healthz.Ping); err != nil {
-	// 	setupLog.Error(err, "unable to set up ready check")
-	// 	os.Exit(1)
-	// }
+	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
+		setupLog.Error(err, "unable to set up health check")
+		os.Exit(1)
+	}
+	if err := mgr.AddReadyzCheck("readyz", healthz.Ping); err != nil {
+		setupLog.Error(err, "unable to set up ready check")
+		os.Exit(1)
+	}
 
 	setupLog.Info("starting manager")
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
