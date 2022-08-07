@@ -91,7 +91,7 @@
         - 2001:db8:6530::1/128 ... EA-C (lo)
 
 ## コントローラ
-### bg-switcher-group
+### bg-switcher-controller
 - 中央コントローラ
 - bg-switcher-group リソースを監視
 - それらを元に bg-switcher のリソースを作成する
@@ -132,9 +132,12 @@ status:
   mainColor: blue
 ```
 
-### bg-switcher-controller
-- 中央コントローラ
-- bg-switcher リソースを監視
+## bg-switcherlet
+- 分散コントローラ
+  - bg-switcher リソースを監視
+    - `name:` に指定されている文字列と自分自身のコンテナ内の環境変数`$NAME`が同じ時だけリコンサイル
+    - `isMainColor`の真偽に応じて FRR 内の med を変更する
+    - 変更後の med を入れる
 ```yaml
 spec:
   color: green
@@ -145,10 +148,3 @@ status:
   color: green
   med: 10
 ```
-
-## bg-switcherlet
-- 分散コントローラ
-  - bg-switcher リソースを監視
-    - `name:` に指定されている文字列と自分自身のコンテナ内の環境変数`$NAME`が同じ時だけリコンサイル
-    - `isMainColor`の真偽に応じて FRR 内の med を変更する
-    - 変更後の med を入れる
