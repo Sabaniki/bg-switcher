@@ -34,6 +34,7 @@ type BbRouterSpec string
 
 type BgSwitcherGroupStatus struct {
 	BbRouters []BbRouterStatus `json:"bbrouters"`
+	MainColor string           `json:"mainColor"`
 }
 
 type BbRouterStatus struct {

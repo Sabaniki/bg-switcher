@@ -59,12 +59,7 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		log.Error(err, "msg", "line", util.LINE())
 		return ctrl.Result{}, err
 	}
-	/// logic here///
-	// if  err := r.ReconcileBgSwitcherLet(ctx, bgg); err != nil {
-	// 	log.Error(err, "msg", "line", util.LINE())
-	// 	return ctrl.Result{}, err
-	// }
-	// 1. search and add
+	allOk := true
 	for _, group := range bgg.Spec.Groups {
 		for _, bbrouterSpecName := range group.BbRouters {
 			foundBbRouterInStatus := false
@@ -79,8 +74,7 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 					Color:   group.Color,
 					Created: false,
 				}
-				isMain := group.Color == bgg.Spec.MainColor
-				if err := r.ReconcileBgSwitcherLet(ctx, bgg, newBbRouterStatus, isMain); err != nil {
+				if err := r.ReconcileBgSwitcherLet(ctx, bgg, newBbRouterStatus, group.Color == bgg.Spec.MainColor); err != nil {
 					log.Error(err, "msg", "line", util.LINE())
 					return ctrl.Result{}, err
 				}
@@ -89,10 +83,36 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 					bgg.Status.BbRouters,
 					newBbRouterStatus,
 				)
+				allOk = false
 				res.StatusUpdated = true
-				// return ctrl.Result{Requeue: true}, nil
 			}
 		}
+	}
+	if !allOk {
+		if res.SpecUpdated {
+			if err := r.Update(ctx, &bgg); err != nil {
+				log.Error(err, "msg", "line", util.LINE())
+				return ctrl.Result{}, err
+			}
+		}
+		if res.StatusUpdated {
+			if err := r.Status().Update(ctx, &bgg); err != nil {
+				log.Error(err, "msg", "line", util.LINE())
+				return ctrl.Result{}, err
+			}
+		}
+		return ctrl.Result{Requeue: true}, nil
+	}
+
+	if bgg.Spec.MainColor != bgg.Status.MainColor {
+		for _, bbrouter := range bgg.Status.BbRouters {
+			if err := r.ReconcileBgSwitcherLet(ctx, bgg, bbrouter, bbrouter.Color == bgg.Spec.MainColor); err != nil {
+				log.Error(err, "msg", "line", util.LINE())
+				return ctrl.Result{}, err
+			}
+		}
+		bgg.Status.MainColor = bgg.Spec.MainColor
+		res.StatusUpdated = true
 	}
 
 	if res.SpecUpdated {
