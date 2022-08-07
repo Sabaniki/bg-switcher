@@ -14,33 +14,33 @@ services:
       - /proc:/proc
       - /etc/netns:/etc/netns
 
-  # Blue-B:
-  #   restart: always
-  #   image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
-  #   environment:
-  #     - NAME="Blue-B"
-  #   privileged: true
-  #   user: "0:0"
-  #   network_mode: host
-  #   volumes:
-  #     - /home/sabaniki/.kube/config:/root/.kube/config
-  #     - /var/run:/var/run
-  #     - /proc:/proc
-  #     - /etc/netns:/etc/netns
+  Blue-B:
+    restart: always
+    image: blue-b
+    environment:
+      - NAME=blue-b
+    privileged: true
+    user: "0:0"
+    network_mode: host
+    volumes:
+      - /home/sabaniki/.kube/config:/root/.kube/config
+      - /var/run:/var/run
+      - /proc:/proc
+      - /etc/netns:/etc/netns
 
-  # Blue-C:
-  #   restart: always
-  #   image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
-  #   environment:
-  #     - NAME="Blue-C"
-  #   privileged: true
-  #   user: "0:0"
-  #   network_mode: host
-  #   volumes:
-  #     - /home/sabaniki/.kube/config:/root/.kube/config
-  #     - /var/run:/var/run
-  #     - /proc:/proc
-  #     - /etc/netns:/etc/netns
+  Blue-C:
+    restart: always
+    image: blue-c
+    environment:
+      - NAME=blue-c
+    privileged: true
+    user: "0:0"
+    network_mode: host
+    volumes:
+      - /home/sabaniki/.kube/config:/root/.kube/config
+      - /var/run:/var/run
+      - /proc:/proc
+      - /etc/netns:/etc/netns
 
   Green-A:
     restart: always
@@ -56,34 +56,47 @@ services:
       - /proc:/proc
       - /etc/netns:/etc/netns
 
-  # Green-B:
-  #   restart: always
-  #   image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
-  #   environment:
-  #     - NAME="Green-B"
-  #   privileged: true
-  #   user: "0:0"
-  #   network_mode: host
-  #   volumes:
-  #     - /home/sabaniki/.kube/config:/root/.kube/config
-  #     - /var/run:/var/run
-  #     - /proc:/proc
-  #     - /etc/netns:/etc/netns
+  Green-A:
+    restart: always
+    image: green-a
+    environment:
+      - NAME=green-a
+    privileged: true
+    user: "0:0"
+    network_mode: host
+    volumes:
+      - /home/sabaniki/.kube/config:/root/.kube/config
+      - /var/run:/var/run
+      - /proc:/proc
+      - /etc/netns:/etc/netns
 
-  # Green-C:
-  #   restart: always
-  #   image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
-  #   environment:
-  #     - NAME="Green-C"
-  #   privileged: true
-  #   user: "0:0"
-  #   network_mode: host
-  #   volumes:
-  #     - /home/sabaniki/.kube/config:/root/.kube/config
-  #     - /var/run:/var/run
-  #     - /proc:/proc
-  #     - /etc/netns:/etc/netns
+  Green-B:
+    restart: always
+    image: green-b
+    environment:
+      - NAME=green-b
+    privileged: true
+    user: "0:0"
+    network_mode: host
+    volumes:
+      - /home/sabaniki/.kube/config:/root/.kube/config
+      - /var/run:/var/run
+      - /proc:/proc
+      - /etc/netns:/etc/netns
 
+  Green-C:
+    restart: always
+    image: green-c
+    environment:
+      - NAME=green-c
+    privileged: true
+    user: "0:0"
+    network_mode: host
+    volumes:
+      - /home/sabaniki/.kube/config:/root/.kube/config
+      - /var/run:/var/run
+      - /proc:/proc
+      - /etc/netns:/etc/netns
 networks:
   default:
     name: kind

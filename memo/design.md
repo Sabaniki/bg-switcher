@@ -91,50 +91,53 @@
         - 2001:db8:6530::1/128 ... EA-C (lo)
 
 ## コントローラ
-### bg-switcher-group
+### bg-switcher-controller
 - 中央コントローラ
 - bg-switcher-group リソースを監視
 - それらを元に bg-switcher のリソースを作成する
 ```yaml
 spec:
-  colors:
-    - color: blue
-      - bbrouter: Blue-A
-      - bbrouter: Blue-B
-      - bbrouter: Blue-C
-    - color: green
-      - bbrouter: Green-A
-      - bbrouter: Green-B
-      - bbrouter: Green-C
+  groups:
+    - group:
+      color: blue
+      - bbrouter: blue-a
+      - bbrouter: blue-b
+      - bbrouter: blue-c
+    - group:
+      color: green
+      - bbrouter: green-a
+      - bbrouter: green-b
+      - bbrouter: green-c
   mainColor: blue
 ```
 ```yaml
 status:
   bbrouters:
-    - bbrouter: Blue-A
+    - bbrouter:
+      name: blue-a
       color: blue
       created: true
-    - bbrouter: Blue-B
+    - bbrouter:
+      name: blue-b
       color: blue
       created: true
-    - bbrouter: Blue-C
+    - bbrouter:
+      name: blue-c
       color: blue
       created: true
-    - bbrouter: Green-A
-      color: green
-      created: true
-    - bbrouter: Green-B
-      color: green
-      created: true
-    - bbrouter: Green-C
+    - bbrouter:
+      name: green-a
       color: green
       created: true
   mainColor: blue
 ```
 
-### bg-switcher-controller
-- 中央コントローラ
-- bg-switcher リソースを監視
+## bg-switcherlet
+- 分散コントローラ
+  - bg-switcher リソースを監視
+    - `name:` に指定されている文字列と自分自身のコンテナ内の環境変数`$NAME`が同じ時だけリコンサイル
+    - `isMainColor`の真偽に応じて FRR 内の med を変更する
+    - 変更後の med を入れる
 ```yaml
 spec:
   color: green
@@ -145,10 +148,3 @@ status:
   color: green
   med: 10
 ```
-
-## bg-switcherlet
-- 分散コントローラ
-  - bg-switcher リソースを監視
-    - `name:` に指定されている文字列と自分自身のコンテナ内の環境変数`$NAME`が同じ時だけリコンサイル
-    - `isMainColor`の真偽に応じて FRR 内の med を変更する
-    - 変更後の med を入れる

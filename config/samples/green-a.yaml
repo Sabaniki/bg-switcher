@@ -1,0 +1,7 @@
+apiVersion: seccamp.sabaniki.vsix.wide.ad.jp/v1
+kind: BgSwitcher
+metadata:
+  name: green-a
+spec:
+  color: green
+  isMain: false

@@ -3,8 +3,8 @@ import fileinput, subprocess, sys, time
 file_name = "cmd/bg-switcherlet/main.go"
 haddr = 8080
 maddr = 9090
-# routers = ["blue-a", "blue-b", "blue-c", "green-a", "green-b", "green-c"]
-routers = ["blue-a", "green-a",]
+routers = ["blue-a", "blue-b", "blue-c", "green-a", "green-b", "green-c"]
+# routers = ["blue-a", "green-a",]
 for i, router_name in enumerate(routers):
     with fileinput.FileInput(file_name, inplace=True, backup=".bak") as f:
         for line in f:
