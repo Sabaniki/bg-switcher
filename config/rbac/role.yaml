@@ -8,6 +8,32 @@ rules:
 - apiGroups:
   - seccamp.sabaniki.vsix.wide.ad.jp
   resources:
+  - bgswitchergroups
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - seccamp.sabaniki.vsix.wide.ad.jp
+  resources:
+  - bgswitchergroups/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - seccamp.sabaniki.vsix.wide.ad.jp
+  resources:
+  - bgswitchergroups/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - seccamp.sabaniki.vsix.wide.ad.jp
+  resources:
   - bgswitchers
   verbs:
   - create

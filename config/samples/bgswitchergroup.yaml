@@ -4,7 +4,7 @@ metadata:
   name: bgswitchergroup-sample
 spec:
 # ↓ miss 'g' is better.
-  Groups:
+  groups:
     - color: blue
       bbrouters:
         - blue-a
@@ -15,4 +15,4 @@ spec:
         - green-a
       # green-b
       # green-c
-  mainColor: blue
+  mainColor: 

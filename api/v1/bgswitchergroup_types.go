@@ -21,7 +21,7 @@ import (
 )
 
 type BgSwitcherGroupSpec struct {
-	Groups    []Group `json:"Groups"`
+	Groups    []Group `json:"groups"`
 	MainColor string  `json:"mainColor"`
 }
 

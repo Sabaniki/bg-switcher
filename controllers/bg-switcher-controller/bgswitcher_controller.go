@@ -36,9 +36,9 @@ type BgSwitcherReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=seccamp.sabaniki.vsix.wide.ad.jp,resources=bgswitchers,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=seccamp.sabaniki.vsix.wide.ad.jp,resources=bgswitchers/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=seccamp.sabaniki.vsix.wide.ad.jp,resources=bgswitchers/finalizers,verbs=update
+//+kubebuilder:rbac:groups=seccamp.sabaniki.vsix.wide.ad.jp,resources=bgswitchergroups,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=seccamp.sabaniki.vsix.wide.ad.jp,resources=bgswitchergroups/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=seccamp.sabaniki.vsix.wide.ad.jp,resources=bgswitchergroups/finalizers,verbs=update
 
 func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := log.FromContext(ctx)
@@ -77,18 +77,20 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 				newBbRouterStatus := seccampv1.BbRouterStatus{
 					Name:    string(bbrouterSpecName),
 					Color:   group.Color,
-					Created: true, // もう少しちゃんとするべき？
+					Created: false,
 				}
-				bgg.Status.BbRouters = append(
-					bgg.Status.BbRouters,
-					newBbRouterStatus,
-				)
-				res.StatusUpdated = true
 				isMain := group.Color == bgg.Spec.MainColor
 				if err := r.ReconcileBgSwitcherLet(ctx, bgg, newBbRouterStatus, isMain); err != nil {
 					log.Error(err, "msg", "line", util.LINE())
 					return ctrl.Result{}, err
 				}
+				newBbRouterStatus.Created = true
+				bgg.Status.BbRouters = append(
+					bgg.Status.BbRouters,
+					newBbRouterStatus,
+				)
+				res.StatusUpdated = true
+				// return ctrl.Result{Requeue: true}, nil
 			}
 		}
 	}
@@ -121,11 +123,11 @@ func (r *BgSwitcherReconciler) ReconcileBgSwitcherLet(ctx context.Context, bgg s
 	})
 
 	if err != nil {
-		log.Error(err, "unable to create or update ConfigMap")
+		log.Error(err, "unable to create or update BgSwitcher resource")
 		return err
 	}
 	if op != controllerutil.OperationResultNone {
-		log.Info("reconcile NfvMachine successfully", "op", op)
+		log.Info("reconcile BgSwitcherLet successfully", "op", op)
 	}
 
 	return nil
@@ -138,7 +140,7 @@ func (r *BgSwitcherReconciler) ReconcileBgSwitcherLet(ctx context.Context, bgg s
 // SetupWithManager sets up the controller with the Manager.
 func (r *BgSwitcherReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&seccampv1.BgSwitcher{}).
-		Owns(&seccampv1.BgSwitcherGroup{}).
+		For(&seccampv1.BgSwitcherGroup{}).
+		Owns(&seccampv1.BgSwitcher{}).
 		Complete(r)
 }

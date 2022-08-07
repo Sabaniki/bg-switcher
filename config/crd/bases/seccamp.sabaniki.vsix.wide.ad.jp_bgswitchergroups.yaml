@@ -33,7 +33,7 @@ spec:
             type: object
           spec:
             properties:
-              Groups:
+              groups:
                 items:
                   properties:
                     bbrouters:
@@ -50,7 +50,7 @@ spec:
               mainColor:
                 type: string
             required:
-            - Groups
+            - groups
             - mainColor
             type: object
           status:
