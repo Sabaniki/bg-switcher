@@ -67,7 +67,7 @@ func (r *BgSwitcherLetReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	containerName := convContainerName(bgs.GetName())
 
 	// Finalizer
-	finalizerName := "bg-switcherlet" + bgs.Name
+	finalizerName := "bg-switcherlet-" + bgs.Name
 	if bgs.ObjectMeta.DeletionTimestamp.IsZero() {
 		if !controllerutil.ContainsFinalizer(&bgs, finalizerName) {
 			controllerutil.AddFinalizer(&bgs, finalizerName)
