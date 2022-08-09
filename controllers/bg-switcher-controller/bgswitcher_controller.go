@@ -58,11 +58,52 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		log.Error(err, "msg", "line", util.LINE())
 		return ctrl.Result{}, err
 	}
+	// TODO: check and assign Groups Spec
+	foundGroupInStatus := false
+	for _, groupSpec := range bgg.Spec.Groups {
+		for _, groupStatus := range bgg.Status.Groups {
+			if groupSpec.Color == groupStatus.Color && groupSpec.Weight == groupStatus.Weight {
+				foundGroupInStatus = true
+			}
+		}
+		if !foundGroupInStatus {
+			bgg.Status.Groups = append(bgg.Status.Groups, groupSpec)
+			res.StatusUpdated = true
+		}
+	}
+	allOk := false
+	for _, specRouter := range bgg.Spec.Routers {
+		foundRouterInStatus := false
+		for _, statusRouter := range bgg.Status.Routers {
+			if string(specRouter) == statusRouter.Name {
+				foundRouterInStatus = true
+			}
+			if !foundRouterInStatus {
+				newBbRouterStatus := seccampv1.RouterStatus{
+					Name:    string(specRouter),
+					Created: false,
+					Groups:  bgg.Spec.Groups,
+				}
+				if err := r.ReconcileBgSwitcherLet(ctx, bgg); err != nil {
+					log.Error(err, "msg", "line", util.LINE())
+					return ctrl.Result{}, err
+				}
+				newBbRouterStatus.Created = true
+				bgg.Status.Routers = append(
+					bgg.Status.Routers,
+					newBbRouterStatus,
+				)
+				allOk = false
+				res.StatusUpdated = true
+			}
+		}
+	}
+
 	// allOk := true
 	// for _, group := range bgg.Spec.Groups {
-	// 	for _, bbrouterSpecName := range group.BbRouters {
+	// 	for _, bbrouterSpecName := range group.Routers {
 	// 		foundBbRouterInStatus := false
-	// 		for _, bbrouterStatus := range bgg.Status.BbRouters {
+	// 		for _, bbrouterStatus := range bgg.Status.Routers {
 	// 			if bbrouterStatus.Name == string(bbrouterSpecName) {
 	// 				foundBbRouterInStatus = true
 	// 			}
@@ -129,7 +170,7 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	return ctrl.Result{}, nil
 }
 
-func (r *BgSwitcherReconciler) ReconcileBgSwitcherLet(ctx context.Context, bgg seccampv1.BgSwitcherGroup, colorGroups seccampv1.ColorGroup) error {
+func (r *BgSwitcherReconciler) ReconcileBgSwitcherLet(ctx context.Context, bgg seccampv1.BgSwitcherGroup) error {
 	// log := log.FromContext(ctx)
 	// bgs := seccampv1.BgSwitcher{}
 	// bgs.SetNamespace(bgg.GetNamespace())
