@@ -67,6 +67,9 @@ func main() {
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		Scheme: scheme,
 		// 後から無理やり書き換える
+		// コマンドライン引数にする
+		// or 環境変数でもいいよね
+		// :0 でもよい
 		MetricsBindAddress: ":MADDR",
 		Port:               9443,
 		// 後から無理やり書き換える
