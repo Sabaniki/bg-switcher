@@ -51,7 +51,6 @@ func (r *BgSwitcherLetReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	res := util.NewResult()
 	bgs := seccampv1.BgSwitcher{}
 	name := os.Getenv("NAME")
-	// pp.Println("NAME", name)
 	if err := r.Get(ctx, req.NamespacedName, &bgs); err != nil {
 		if errors.IsNotFound(err) {
 			return ctrl.Result{}, nil

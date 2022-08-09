@@ -2,9 +2,11 @@ version: '3'
 services:
   Blue-A:
     restart: always
-    image: blue-a
+    image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
     environment:
       - NAME=blue-a
+      - MADDR=8080
+      - PADDR=9090
     privileged: true
     user: "0:0"
     network_mode: host
@@ -16,9 +18,11 @@ services:
 
   Blue-B:
     restart: always
-    image: blue-b
+    image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
     environment:
       - NAME=blue-b
+      - MADDR=8081
+      - PADDR=9091
     privileged: true
     user: "0:0"
     network_mode: host
@@ -30,9 +34,11 @@ services:
 
   Blue-C:
     restart: always
-    image: blue-c
+    image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
     environment:
       - NAME=blue-c
+      - MADDR=8082
+      - PADDR=9092
     privileged: true
     user: "0:0"
     network_mode: host
@@ -44,9 +50,11 @@ services:
 
   Green-A:
     restart: always
-    image: green-a
+    image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
     environment:
       - NAME=green-a
+      - MADDR=8083
+      - PADDR=9093
     privileged: true
     user: "0:0"
     network_mode: host
@@ -58,9 +66,11 @@ services:
 
   Green-A:
     restart: always
-    image: green-a
+    image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
     environment:
       - NAME=green-a
+      - MADDR=8084
+      - PADDR=9094
     privileged: true
     user: "0:0"
     network_mode: host
@@ -72,9 +82,11 @@ services:
 
   Green-B:
     restart: always
-    image: green-b
+    image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
     environment:
       - NAME=green-b
+      - MADDR=8085
+      - PADDR=9095
     privileged: true
     user: "0:0"
     network_mode: host
@@ -86,9 +98,11 @@ services:
 
   Green-C:
     restart: always
-    image: green-c
+    image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
     environment:
       - NAME=green-c
+      - MADDR=8086
+      - PADDR=9096
     privileged: true
     user: "0:0"
     network_mode: host
