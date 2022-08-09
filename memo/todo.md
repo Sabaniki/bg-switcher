@@ -33,5 +33,5 @@ Command Output: failed to save image: invalid output path: directory "/tmp/image
 ## 2022/08/09 午前
 - [x] Stakeholderリスト作る
 - [x] CE->PE名前を変える
+- [x] EnvとかCli-argつかって, imageを共通化
 - [ ] N% deployをどういうoperation体験でやるかどうかを整理する.
-- [ ] EnvとかCli-argつかって, imageを共通化
