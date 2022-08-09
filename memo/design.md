@@ -58,37 +58,44 @@ spec:
       weight: 10
     - color: green
       weight: 90
-  routers:
-    - router:
-      name: EX-A
-      peer-to:
-        - Blue-A
-        - Green-A
-    - router:
-      name: EX-B
-      peer-to:
-        - Blue-B
-        - Green-B
-    - router:
-      name: EX-C
-      peer-to:
-        - Blue-C
-        - Green-C
-    - router:
-      name: PE-A
-      peer-to:
-        - Blue-A
-        - Green-A
-    - router:
-      name: PE-B
-      peer-to:
-        - Blue-B
-        - Green-B
-    - router:
-      name: PE-C
-      peer-to:
-        - Blue-C
-        - Green-C
+    routers:
+      - EX-A
+      - EX-B
+      - EX-C
+      - PE-A
+      - PE-B
+      - PE-C
+#   routers:
+#     - router:
+#       name: EX-A
+#       peer-to:
+#         - Blue-A
+#         - Green-A
+#     - router:
+#       name: EX-B
+#       peer-to:
+#         - Blue-B
+#         - Green-B
+#     - router:
+#       name: EX-C
+#       peer-to:
+#         - Blue-C
+#         - Green-C
+#     - router:
+#       name: PE-A
+#       peer-to:
+#         - Blue-A
+#         - Green-A
+#     - router:
+#       name: PE-B
+#       peer-to:
+#         - Blue-B
+#         - Green-B
+#     - router:
+#       name: PE-C
+#       peer-to:
+#         - Blue-C
+#         - Green-C
 
 status:
   groups:
