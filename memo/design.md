@@ -35,6 +35,45 @@
         - docker in docker を利用して，所属しているルータにだけ設定を入れるようにする
             - Blue-A 用のコントローラは Blue-A しかコントロールしない
 
+
+## ステークホルダー
+- それぞれのノードの所有権
+  - Customer
+    - CM-{A/B/C}
+  - Provider
+    - BB/EX/PE
+  - 外部AS 
+    - EA-{A/B/C}
+
+## n% deploy
+- データモデル
+
+
+```yaml
+apiVersion: seccamp.sabaniki.vsix.wide.ad.jp/v1
+kind: BgSwitcherGroup
+metadata:
+  name: bgswitchergroup-sample
+spec:
+  groups:
+    - color: blue
+      weight: 10
+      # flowspec つかうとか？
+      bbrouters:
+        - blue-a
+        - blue-b
+        - blue-c
+    - color: green
+      weight: 90
+      bbrouters:
+        - green-a
+        - green-b
+        - green-c
+  # mainColor: green
+```
+env できれいにする
+
+
 ## 設計情報
 - router-id
     - Blue

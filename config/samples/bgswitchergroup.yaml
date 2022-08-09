@@ -14,4 +14,4 @@ spec:
         - green-a
         - green-b
         - green-c
-  mainColor: blue
+  mainColor: green

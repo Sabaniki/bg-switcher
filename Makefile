@@ -92,7 +92,7 @@ controller-gen: ## Download controller-gen locally if necessary.
 
 .PHONY: tinet-upconf
 tinet-upconf:
-	cd topo && tinet upconf | sudo sh -x
+	cd topo && tinet upconf | sudo sh -x && docker compose up -d
 
 .PHONY: tinet-down
 tinet-down:
