@@ -42,20 +42,21 @@ var (
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
-
 	utilruntime.Must(seccampv1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
 func main() {
-	var metricsAddr string
-	var enableLeaderElection bool
-	var probeAddr string
-	flag.StringVar(&metricsAddr, "metrics-bind-address", ":MADDR", "The address the metric endpoint binds to.")
-	flag.StringVar(&probeAddr, "health-probe-bind-address", ":HADDR", "The address the probe endpoint binds to.")
-	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
-		"Enable leader election for controller manager. "+
-			"Enabling this will ensure there is only one active controller manager.")
+	// var metricsAddr string
+	// var enableLeaderElection bool
+	// var probeAddr string
+	// flag.StringVar(&metricsAddr, "metrics-bind-address", ":MADDR", "The address the metric endpoint binds to.")
+	// flag.StringVar(&probeAddr, "health-probe-bind-address", ":HADDR", "The address the probe endpoint binds to.")
+	// flag.BoolVar(&enableLeaderElection, "leader-elect", false,
+	// 	"Enable leader election for controller manager. "+
+	// 		"Enabling this will ensure there is only one active controller manager.")
+	metricAddrFromEnv := os.Getenv("MADDR")
+	probeAddrFromEnv := os.Getenv("PADDR")
 	opts := zap.Options{
 		Development: true,
 	}
@@ -70,11 +71,11 @@ func main() {
 		// コマンドライン引数にする
 		// or 環境変数でもいいよね
 		// :0 でもよい
-		MetricsBindAddress: ":MADDR",
+		MetricsBindAddress: metricAddrFromEnv,
 		Port:               9443,
 		// 後から無理やり書き換える
-		HealthProbeBindAddress: ":HADDR",
-		LeaderElection:         enableLeaderElection,
+		HealthProbeBindAddress: probeAddrFromEnv,
+		LeaderElection:         false,
 		LeaderElectionID:       "8981d30c.sabaniki.vsix.wide.ad.jp",
 		// LeaderElectionReleaseOnCancel defines if the leader should step down voluntarily
 		// when the Manager ends. This requires the binary to immediately end when the
