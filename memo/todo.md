@@ -1,5 +1,5 @@
 # TODO
-## 環境築
+## 環境構築
 - [x] change Makefile
 - [x] change manager
 - [x] 初期状態から変えていない suite_test が致命的な感じで落ちることの解決
@@ -20,18 +20,15 @@ Command Output: failed to save image: invalid output path: directory "/tmp/image
   - [issueを見つけた](https://github.com/kubernetes-sigs/kind/issues/2535)
   - docker を get.docker.com から再インストールでかいけつ
 
-- [ ] postfini が本当に使えないか調べる
+- [x] postfini が本当に使えないか調べる
   - 分散コントローラは docker-compose で上げることにした
   - tinet の up/down と連動してほしい
   - up は postinit が動く
   - down の postfini は動いていない気がする
-
-## 開発
-### bg-switcheerlet
-### bg-switcher-group
 
 ## 2022/08/09 午前
 - [x] Stakeholderリスト作る
 - [x] CE->PE名前を変える
 - [x] EnvとかCli-argつかって, imageを共通化
 - [ ] N% deployをどういうoperation体験でやるかどうかを整理する.
+- [ ] /etc/hosts にルータ書いて traceroute の結果を見やすく

@@ -47,8 +47,6 @@
 
 ## n% deploy
 - データモデル
-
-
 ```yaml
 apiVersion: seccamp.sabaniki.vsix.wide.ad.jp/v1
 kind: BgSwitcherGroup
@@ -71,7 +69,207 @@ spec:
         - green-c
   # mainColor: green
 ```
-env できれいにする
+- weight を指定するとそれに応じた割合で首を振る
+  - 外から内側へ始めた通信は
+
+- extcommunity bandwidth を利用する
+  - 今までとは逆に行う
+    - EX-{A/B/C}，PE-{A/B/C} に分散コントローラを設置する
+      - EX ... 外向きの通信，トランジット通信を曲げる
+      - PE ... AS の中の顧客の通信を曲げる
+    - その分散コントローラが自分自身の `route-map WIEGHT_LEVEL permit 5` を編集する
+  - BB に現在 MED の設定をしている route-map は削除する
+
+
+### 以下 config サンプル
+```
+❯ dexec vtysh -c "show running-con"
+docker exec -it Blue-A vtysh -c show running-con
+
+Building configuration...
+
+Current configuration:
+!
+frr version 8.3-dev-my-manual-build
+frr defaults traditional
+hostname Blue-A
+service integrated-vtysh-config
+!
+interface lo
+ ipv6 address 2001:db8:6500:100:ace::1/128
+exit
+!
+router bgp 64600
+ bgp router-id 10.64.60.1
+ no bgp ebgp-requires-policy
+ no bgp default ipv4-unicast
+ bgp confederation identifier 65000
+ bgp confederation peers 64501 64502 64503 64601
+ neighbor BB-BLUE peer-group
+ neighbor BB-BLUE remote-as 64600
+ neighbor CONSUMERS peer-group
+ neighbor EX-A peer-group
+ neighbor EX-A remote-as 64501
+ neighbor blue-b interface peer-group BB-BLUE
+ no neighbor blue-b capability extended-nexthop
+ neighbor blue-c interface peer-group BB-BLUE
+ no neighbor blue-c capability extended-nexthop
+ neighbor pe-a interface peer-group CONSUMERS
+ neighbor pe-a remote-as 64701
+ no neighbor pe-a capability extended-nexthop
+ neighbor ex-a interface peer-group EX-A
+ no neighbor ex-a capability extended-nexthop
+ !
+ address-family ipv6 unicast
+  network 2001:db8:6500::/48
+  network 2001:db8:6500:100:ace::1/128
+  neighbor BB-BLUE activate
+  neighbor BB-BLUE next-hop-self
+  neighbor BB-BLUE soft-reconfiguration inbound
+  neighbor CONSUMERS activate
+  neighbor CONSUMERS next-hop-self
+  neighbor CONSUMERS soft-reconfiguration inbound
+  neighbor CONSUMERS route-map MED_LEVEL out
+  neighbor EX-A activate
+  neighbor EX-A next-hop-self
+  neighbor EX-A soft-reconfiguration inbound
+  neighbor EX-A route-map MED_LEVEL out
+ exit-address-family
+exit
+!
+route-map MED_LEVEL permit 5
+ set metric 10
+exit
+!
+segment-routing
+ traffic-eng
+ exit
+exit
+!
+end
+
+```
+```
+docker exec -it Blue-A vtysh -c show running-con
+
+Building configuration...
+
+Current configuration:
+!
+frr version 8.3-dev-my-manual-build
+frr defaults traditional
+hostname Blue-A
+service integrated-vtysh-config
+!
+interface lo
+ ipv6 address 2001:db8:6500:100:ace::1/128
+exit
+!
+router bgp 64600
+ bgp router-id 10.64.60.1
+ no bgp ebgp-requires-policy
+ no bgp default ipv4-unicast
+ bgp confederation identifier 65000
+ bgp confederation peers 64501 64502 64503 64601
+ neighbor BB-BLUE peer-group
+ neighbor BB-BLUE remote-as 64600
+ neighbor CONSUMERS peer-group
+ neighbor EX-A peer-group
+ neighbor EX-A remote-as 64501
+ neighbor blue-b interface peer-group BB-BLUE
+ no neighbor blue-b capability extended-nexthop
+ neighbor blue-c interface peer-group BB-BLUE
+ no neighbor blue-c capability extended-nexthop
+ neighbor pe-a interface peer-group CONSUMERS
+ neighbor pe-a remote-as 64701
+ no neighbor pe-a capability extended-nexthop
+ neighbor ex-a interface peer-group EX-A
+ no neighbor ex-a capability extended-nexthop
+ !
+ address-family ipv6 unicast
+  network 2001:db8:6500::/48
+  network 2001:db8:6500:100:ace::1/128
+  neighbor BB-BLUE activate
+  neighbor BB-BLUE next-hop-self
+  neighbor BB-BLUE soft-reconfiguration inbound
+  neighbor CONSUMERS activate
+  neighbor CONSUMERS next-hop-self
+  neighbor CONSUMERS soft-reconfiguration inbound
+  neighbor CONSUMERS route-map MED_LEVEL out
+  neighbor EX-A activate
+  neighbor EX-A next-hop-self
+  neighbor EX-A soft-reconfiguration inbound
+  neighbor EX-A route-map MED_LEVEL out
+ exit-address-family
+exit
+!
+route-map MED_LEVEL permit 5
+ set metric 10
+exit
+!
+segment-routing
+ traffic-eng
+ exit
+exit
+!
+end
+```
+
+```
+docker exec -it PE-A vtysh -c show running-con
+
+Building configuration...
+
+Current configuration:
+!
+frr version 8.3-dev-my-manual-build
+frr defaults traditional
+hostname PE-A
+service integrated-vtysh-config
+!
+interface cm-a
+ ipv6 address 2001:db8:6500:6471::1/64
+exit
+!
+router bgp 64701
+ bgp router-id 10.64.70.1
+ no bgp ebgp-requires-policy
+ no bgp suppress-duplicates
+ no bgp default ipv4-unicast
+ no bgp network import-check
+ neighbor BB peer-group
+ neighbor BB remote-as 65000
+ neighbor blue-a interface peer-group BB
+ no neighbor blue-a capability extended-nexthop
+ neighbor green-a interface peer-group BB
+ no neighbor green-a capability extended-nexthop
+ !
+ address-family ipv6 unicast
+  redistribute connected
+  neighbor BB activate
+  neighbor BB soft-reconfiguration inbound
+  neighbor blue-a route-map test out
+  neighbor green-a route-map test2 out
+ exit-address-family
+exit
+!
+route-map test permit 5
+ set extcommunity bandwidth 1
+exit
+!
+route-map test2 permit 10
+ set extcommunity bandwidth 4
+exit
+!
+segment-routing
+ traffic-eng
+ exit
+exit
+!
+end
+
+```
+
 
 
 ## 設計情報
