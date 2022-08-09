@@ -1,6 +1,6 @@
-postinit:
-- cmds:
-  - cmd: docker compose up -d
+# postinit:
+# - cmds:
+#   - cmd: docker compose up -d
 
 # postfini:
 # - cmds:
@@ -14,7 +14,7 @@ nodes:
   - { name: blue-b, type: direct, args: Blue-B#blue-a }
   - { name: blue-c, type: direct, args: Blue-C#blue-a }
   - { name: ex-a, type: direct, args: EX-A#blue-a }
-  - { name: ce-a, type: direct, args: CE-A#blue-a }
+  - { name: pe-a, type: direct, args: PE-A#blue-a }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -24,7 +24,7 @@ nodes:
   - { name: blue-a, type: direct, args: Blue-A#blue-b }
   - { name: blue-c, type: direct, args: Blue-C#blue-b }
   - { name: ex-b, type: direct, args: EX-B#blue-b }
-  - { name: ce-b, type: direct, args: CE-B#blue-b }
+  - { name: pe-b, type: direct, args: PE-B#blue-b }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -34,7 +34,7 @@ nodes:
   - { name: blue-b, type: direct, args: Blue-B#blue-c }
   - { name: blue-a, type: direct, args: Blue-A#blue-c }
   - { name: ex-c, type: direct, args: EX-C#blue-c }
-  - { name: ce-c, type: direct, args: CE-C#blue-c }
+  - { name: pe-c, type: direct, args: PE-C#blue-c }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -45,7 +45,7 @@ nodes:
   - { name: green-b, type: direct, args: Green-B#green-a }
   - { name: green-c, type: direct, args: Green-C#green-a }
   - { name: ex-a, type: direct, args: EX-A#green-a }
-  - { name: ce-a, type: direct, args: CE-A#green-a }
+  - { name: pe-a, type: direct, args: PE-A#green-a }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -55,7 +55,7 @@ nodes:
   - { name: green-a, type: direct, args: Green-A#green-b }
   - { name: green-c, type: direct, args: Green-C#green-b }
   - { name: ex-b, type: direct, args: EX-B#green-b }
-  - { name: ce-b, type: direct, args: CE-B#green-b }
+  - { name: pe-b, type: direct, args: PE-B#green-b }
   sysctls:
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
@@ -66,7 +66,7 @@ nodes:
   - { name: green-b, type: direct, args: Green-B#green-c }
   - { name: green-a, type: direct, args: Green-A#green-c }
   - { name: ex-c, type: direct, args: EX-C#green-c }
-  - { name: ce-c, type: direct, args: CE-C#green-c }
+  - { name: pe-c, type: direct, args: PE-C#green-c }
   sysctls:
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
@@ -100,30 +100,30 @@ nodes:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
 
-- name: CE-A
+- name: PE-A
   image: sabaniki/frr:latest
   interfaces:
-  - { name: blue-a, type: direct, args: Blue-A#ce-a }
-  - { name: green-a, type: direct, args: Green-A#ce-a }
-  - { name: cm-a, type: direct, args: CM-A#ce-a }
+  - { name: blue-a, type: direct, args: Blue-A#pe-a }
+  - { name: green-a, type: direct, args: Green-A#pe-a }
+  - { name: cm-a, type: direct, args: CM-A#pe-a }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
-- name: CE-B
+- name: PE-B
   image: sabaniki/frr:latest
   interfaces:
-  - { name: blue-b, type: direct, args: Blue-B#ce-b }
-  - { name: green-b, type: direct, args: Green-B#ce-b }
-  - { name: cm-b, type: direct, args: CM-B#ce-b }
+  - { name: blue-b, type: direct, args: Blue-B#pe-b }
+  - { name: green-b, type: direct, args: Green-B#pe-b }
+  - { name: cm-b, type: direct, args: CM-B#pe-b }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
-- name: CE-C
+- name: PE-C
   image: sabaniki/frr:latest
   interfaces:
-  - { name: blue-c, type: direct, args: Blue-C#ce-c }
-  - { name: green-c, type: direct, args: Green-C#ce-c }
-  - { name: cm-c, type: direct, args: CM-C#ce-c }
+  - { name: blue-c, type: direct, args: Blue-C#pe-c }
+  - { name: green-c, type: direct, args: Green-C#pe-c }
+  - { name: cm-c, type: direct, args: CM-C#pe-c }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -131,21 +131,21 @@ nodes:
 - name: CM-A
   image: sabaniki/frr:latest
   interfaces:
-  - { name: ce-a, type: direct, args: CE-A#cm-a }
+  - { name: pe-a, type: direct, args: PE-A#cm-a }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
 - name: CM-B
   image: sabaniki/frr:latest
   interfaces:
-  - { name: ce-b, type: direct, args: CE-B#cm-b }
+  - { name: pe-b, type: direct, args: PE-B#cm-b }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
 - name: CM-C
   image: sabaniki/frr:latest
   interfaces:
-  - { name: ce-c, type: direct, args: CE-C#cm-c }
+  - { name: pe-c, type: direct, args: PE-C#cm-c }
   sysctls:
   - sysctl: net.ipv6.conf.all.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
@@ -195,8 +195,8 @@ node_configs:
       -c " neighbor blue-b interface peer-group BB-BLUE"
       -c " neighbor blue-c interface peer-group BB-BLUE"
       -c " neighbor ex-a interface peer-group EX-A"
-      -c " neighbor ce-a interface peer-group CONSUMERS"
-      -c " neighbor ce-a interface remote-as 64701"
+      -c " neighbor pe-a interface peer-group CONSUMERS"
+      -c " neighbor pe-a interface remote-as 64701"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
@@ -241,8 +241,8 @@ node_configs:
       -c " neighbor blue-a interface peer-group BB-BLUE"
       -c " neighbor blue-c interface peer-group BB-BLUE"
       -c " neighbor ex-b interface peer-group EX-B"
-      -c " neighbor ce-b interface peer-group CONSUMERS"
-      -c " neighbor ce-b interface remote-as 64702"
+      -c " neighbor pe-b interface peer-group CONSUMERS"
+      -c " neighbor pe-b interface remote-as 64702"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
@@ -287,8 +287,8 @@ node_configs:
       -c " neighbor blue-b interface peer-group BB-BLUE"
       -c " neighbor blue-a interface peer-group BB-BLUE"
       -c " neighbor ex-c interface peer-group EX-C"
-      -c " neighbor ce-c interface peer-group CONSUMERS"
-      -c " neighbor ce-c interface remote-as 64703"
+      -c " neighbor pe-c interface peer-group CONSUMERS"
+      -c " neighbor pe-c interface remote-as 64703"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64600"
@@ -333,8 +333,8 @@ node_configs:
       -c " neighbor green-b interface peer-group BB-GREEN"
       -c " neighbor green-c interface peer-group BB-GREEN"
       -c " neighbor ex-a interface peer-group EX-A"
-      -c " neighbor ce-a interface peer-group CONSUMERS"
-      -c " neighbor ce-a interface remote-as 64701"
+      -c " neighbor pe-a interface peer-group CONSUMERS"
+      -c " neighbor pe-a interface remote-as 64701"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64601"
@@ -379,8 +379,8 @@ node_configs:
       -c " neighbor green-a interface peer-group BB-GREEN"
       -c " neighbor green-c interface peer-group BB-GREEN"
       -c " neighbor ex-b interface peer-group EX-B"
-      -c " neighbor ce-b interface peer-group CONSUMERS"
-      -c " neighbor ce-b interface remote-as 64702"
+      -c " neighbor pe-b interface peer-group CONSUMERS"
+      -c " neighbor pe-b interface remote-as 64702"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64601"
@@ -425,8 +425,8 @@ node_configs:
       -c " neighbor green-a interface peer-group BB-GREEN"
       -c " neighbor green-b interface peer-group BB-GREEN"
       -c " neighbor ex-c interface peer-group EX-C"
-      -c " neighbor ce-c interface peer-group CONSUMERS"
-      -c " neighbor ce-c interface remote-as 64703"
+      -c " neighbor pe-c interface peer-group CONSUMERS"
+      -c " neighbor pe-c interface remote-as 64703"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64601"
@@ -575,7 +575,7 @@ node_configs:
       -c "  neighbor EX-AS next-hop-self"
       -c "  neighbor EX-AS soft-reconfiguration inbound"
 
-- name: CE-A
+- name: PE-A
   cmds:
   - cmd: >-
       vtysh -c "conf t"
@@ -601,7 +601,7 @@ node_configs:
       -c "  redistribute connected"
       -c "  neighbor BB activate"
       -c "  neighbor BB soft-reconfiguration inbound"
-- name: CE-B
+- name: PE-B
   cmds:
   - cmd: >-
       vtysh -c "conf t"
@@ -627,7 +627,7 @@ node_configs:
       -c "  redistribute connected"
       -c "  neighbor BB activate"
       -c "  neighbor BB soft-reconfiguration inbound"
-- name: CE-C
+- name: PE-C
   cmds:
   - cmd: >-
       vtysh -c "conf t"
@@ -658,7 +658,7 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "interface ce-a"
+      -c "interface pe-a"
       -c " ipv6 address 2001:db8:6500:6471::2/64"
   - cmd: >-
       vtysh -c "conf t"
@@ -667,7 +667,7 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "interface ce-b"
+      -c "interface pe-b"
       -c " ipv6 address 2001:db8:6500:6472::2/64"
   - cmd: >-
       vtysh -c "conf t"
@@ -676,7 +676,7 @@ node_configs:
   cmds:
   - cmd: >-
       vtysh -c "conf t"
-      -c "interface ce-c"
+      -c "interface pe-c"
       -c " ipv6 address 2001:db8:6500:6473::2/64"
   - cmd: >-
       vtysh -c "conf t"

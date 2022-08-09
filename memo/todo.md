@@ -1,5 +1,5 @@
 # TODO
-## 環境構築
+## 環境築
 - [x] change Makefile
 - [x] change manager
 - [x] 初期状態から変えていない suite_test が致命的な感じで落ちることの解決
@@ -28,5 +28,10 @@ Command Output: failed to save image: invalid output path: directory "/tmp/image
 
 ## 開発
 ### bg-switcheerlet
-### bg-switcher-controller
 ### bg-switcher-group
+
+## 2022/08/09 午前
+- [x] Stakeholderリスト作る
+- [ ] CE->PE名前を変える
+- [ ] N% deployをどういうoperation体験でやるかどうかを整理する.
+- [ ] EnvとかCli-argつかって, imageを共通化
