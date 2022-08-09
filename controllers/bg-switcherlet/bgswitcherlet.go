@@ -82,32 +82,47 @@ func (r *BgSwitcherLetReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		}
 		return ctrl.Result{}, nil
 	}
-	med, err := getMed(containerName)
-	if err != nil {
-		log.Error(err, "msg", "line", util.LINE())
-		return ctrl.Result{}, err
+	for i, group := range bgs.Spec.Groups {
+		if res, err := isExistRouteMap(containerName, group.Color); err != nil {
+			log.Error(err, "msg", "line", util.LINE())
+			return ctrl.Result{}, err
+		} else if !res {
+			if err = setWeight(containerName, group.Color, group.Weight, (i+1)*5); err != nil {
+				log.Error(err, "msg", "line", util.LINE())
+				return ctrl.Result{}, err
+			}
+		}
 	}
 
-	changedMed := false
-	if bgs.Spec.IsMain && med != 0 {
-		setMed(containerName, 0)
-		changedMed = true
-	} else if !bgs.Spec.IsMain && med == 0 {
-		setMed(containerName, 10)
-		changedMed = true
-	}
-	if changedMed {
-		currentMed, err := getMed(containerName)
+	currentWeight := []int{}
+	for _, group := range bgs.Spec.Groups {
+		weight, err := getWeight(containerName, group.Color)
 		if err != nil {
 			log.Error(err, "msg", "line", util.LINE())
 			return ctrl.Result{}, err
 		}
-		bgs.Status.Med = currentMed
-		res.StatusUpdated = true
+		currentWeight = append(currentWeight, weight)
 	}
 
-	if bgs.Spec.Color != bgs.Status.Color {
-		bgs.Status.Color = bgs.Spec.Color
+	updateWeight := false
+	newWGroup := []seccampv1.ColorGroup{}
+	for i, groupSpec := range bgs.Spec.Groups {
+		if groupSpec.Weight != currentWeight[i] {
+			setWeight(containerName, groupSpec.Color, groupSpec.Weight, (i+1)*5)
+			newWeight, err := getWeight(containerName, groupSpec.Color)
+			if err != nil {
+				log.Error(err, "msg", "line", util.LINE())
+				return ctrl.Result{}, err
+			}
+			newWGroup = append(newWGroup, seccampv1.ColorGroup{
+				Color:  groupSpec.Color,
+				Weight: newWeight,
+			})
+			updateWeight = true
+		}
+	}
+	if updateWeight {
+		bgs.Status.Groups = newWGroup
 		res.StatusUpdated = true
 	}
 
@@ -133,14 +148,29 @@ func (r *BgSwitcherLetReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func getMed(containerName string) (int, error) {
-	// docker exec Blue-A vtysh -c 'show route-map json' | jq ".BGP" | jq "select(type != \"null\")" | jq ".MED_LEVEL.rules[0].setClauses[]"
+func isExistRouteMap(containerName string, color string) (bool, error) {
+	//docker exec PE-A vtysh -c 'show route-map json' | jq ".BGP" | jq "select(type != \"null\")" | jq "[.]" | jq 'map(has("test"))[0]'
+	color = strings.ToUpper(color)
 	res, err := executer.ExecShowCommand(
 		containerName,
 		"route-map",
 		".BGP",
 		"select(type != \"null\")",
-		".MED_LEVEL.rules[0].setClauses[]",
+		"[.]",
+		"map(has(\"WEIGHT_LEVEL_"+color+"\"))",
+	)
+	return strings.Contains(res, "true"), err
+}
+
+func getWeight(containerName string, color string) (int, error) {
+	// docker exec PE-A vtysh -c 'show route-map json' | jq ".BGP" | jq "select(type != \"null\")" | jq ".WEIGHT_LEVEL_{COLOR}.rules[0].setClauses[]"
+	color = strings.ToUpper(color)
+	res, err := executer.ExecShowCommand(
+		containerName,
+		"route-map",
+		".BGP",
+		"select(type != \"null\")",
+		".WEIGHT_LEVEL_"+color+".rules[0].setClauses[]",
 	)
 	if err != nil {
 		return -1, err
@@ -153,19 +183,26 @@ func getMed(containerName string) (int, error) {
 	return int(num), nil
 }
 
-func setMed(containerName string, med int) error {
+func setWeight(containerName string, color string, weight int, seq int) error {
+	color = strings.ToUpper(color)
 	err := executer.ExecCommand(
 		containerName,
-		"route-map MED_LEVEL permit 5",
-		"set metric "+strconv.Itoa(med),
+		"route-map WEIGHT_LEVEL_"+color+" permit "+strconv.Itoa(seq),
+		"set extcommunity bandwidth "+strconv.Itoa(weight),
 	)
 	return err
 }
 
+// func setPeer(containerName string, color string) {
+// 	config := ""
+// 	strings.Contains(res, "true"), err
+// }
+
 func convContainerName(rawName string) string {
-	runes := []rune(rawName)
-	runes[0] = []rune(strings.ToUpper(string(runes[0])))[0]
-	runes[len(runes)-1] = []rune(strings.ToUpper(string(runes[len(runes)-1])))[0]
-	return string(runes)
+	return strings.ToUpper(rawName)
+	// runes := []rune(rawName)
+	// runes[0] = []rune(strings.ToUpper(string(runes[0])))[0]
+	// runes[len(runes)-1] = []rune(strings.ToUpper(string(runes[len(runes)-1])))[0]
+	// return string(runes)
 
 }

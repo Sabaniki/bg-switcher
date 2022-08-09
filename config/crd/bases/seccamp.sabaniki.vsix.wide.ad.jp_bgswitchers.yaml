@@ -35,24 +35,38 @@ spec:
           spec:
             description: BgSwitcherSpec defines the desired state of BgSwitcher
             properties:
-              color:
-                type: string
-              isMain:
-                type: boolean
+              groups:
+                items:
+                  properties:
+                    color:
+                      type: string
+                    weight:
+                      type: integer
+                  required:
+                  - color
+                  - weight
+                  type: object
+                type: array
             required:
-            - color
-            - isMain
+            - groups
             type: object
           status:
             description: BgSwitcherStatus defines the observed state of BgSwitcher
             properties:
-              color:
-                type: string
-              med:
-                type: integer
+              groups:
+                items:
+                  properties:
+                    color:
+                      type: string
+                    weight:
+                      type: integer
+                  required:
+                  - color
+                  - weight
+                  type: object
+                type: array
             required:
-            - color
-            - med
+            - groups
             type: object
         type: object
     served: true

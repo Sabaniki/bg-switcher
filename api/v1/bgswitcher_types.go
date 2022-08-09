@@ -20,19 +20,25 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+type ColorGroup struct {
+	Color  string `json:"color"`
+	Weight int    `json:"weight"`
+}
+
+// type PeerTo struct {
+// 	Name  string `json:"name"`
+// 	Color string `json:"color"`
+// }
 
 // BgSwitcherSpec defines the desired state of BgSwitcher
 type BgSwitcherSpec struct {
-	Color  string `json:"color"`
-	IsMain bool   `json:"isMain"`
+	Groups []ColorGroup `json:"groups"`
+	// Peers  []PeerTo     `json:"peers"`
 }
 
 // BgSwitcherStatus defines the observed state of BgSwitcher
 type BgSwitcherStatus struct {
-	Color string `json:"color"`
-	Med   int    `json:"med"`
+	Groups []ColorGroup `json:"groups"`
 }
 
 //+kubebuilder:object:root=true

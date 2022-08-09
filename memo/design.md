@@ -59,12 +59,36 @@ spec:
     - color: green
       weight: 90
   routers:
-    - EX-A
-    - EX-B
-    - EX-C
-    - PE-A
-    - PE-B
-    - PE-C
+    - router:
+      name: EX-A
+      peer-to:
+        - Blue-A
+        - Green-A
+    - router:
+      name: EX-B
+      peer-to:
+        - Blue-B
+        - Green-B
+    - router:
+      name: EX-C
+      peer-to:
+        - Blue-C
+        - Green-C
+    - router:
+      name: PE-A
+      peer-to:
+        - Blue-A
+        - Green-A
+    - router:
+      name: PE-B
+      peer-to:
+        - Blue-B
+        - Green-B
+    - router:
+      name: PE-C
+      peer-to:
+        - Blue-C
+        - Green-C
 
 status:
   groups:
@@ -76,45 +100,51 @@ status:
     - router:
       name: PE-A
       created: true
-      - color: blue
-        weight: 10
-      - color: green
-        weight: 90
+      groups:
+        - color: blue
+          weight: 10
+        - color: green
+          weight: 90
     - router:
       name: PE-B
       created: true
-      - color: blue
-        weight: 10
-      - color: green
-        weight: 90
+      groups:
+        - color: blue
+          weight: 10
+        - color: green
+          weight: 90
     - router:
       name: PE-C
       created: true
-      - color: blue
-        weight: 10
-      - color: green
-        weight: 90
+      groups:
+        - color: blue
+          weight: 10
+        - color: green
+          weight: 90
     - router:
       name: EX-A
       created: true
-      - color: blue
-        weight: 10
-      - color: green
-        weight: 90
+      groups:
+        - color: blue
+          weight: 10
+        - color: green
+          weight: 90
     - router:
       name: EX-B
       created: true
-      - color: blue
-        weight: 10
-      - color: green
-        weight: 90
+      groups:
+        - color: blue
+          weight: 10
+        - color: green
+          weight: 90
     - router:
       name: EX-C
       created: true
-      - color: blue
-        weight: 10
-      - color: green
-        weight: 90
+      groups:
+        - color: blue
+          weight: 10
+        - color: green
+          weight: 90
 ```
 
 ```yaml
@@ -128,12 +158,23 @@ spec:
       weight: 10
     - color: green
       weight: 90
+  peers:
+    - name: Blue-A
+      color: blue
+    - name: Green-A
+      color: green
+
   status:
   groups:
     - color: blue
       weight: 10
     - color: green
       weight: 90
+  peer-to:
+    - name: Blue-A
+      color: blue
+    - name: Green-A
+      color: green
 ```
 - weight を指定するとそれに応じた割合で首を振る
   - 外から内側へ始めた通信は

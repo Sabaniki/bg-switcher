@@ -1,7 +1,0 @@
-apiVersion: seccamp.sabaniki.vsix.wide.ad.jp/v1
-kind: BgSwitcher
-metadata:
-  name: blue-a
-spec:
-  color: blue
-  isMain: true

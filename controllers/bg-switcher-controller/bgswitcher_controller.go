@@ -23,7 +23,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	controllerutil "sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	seccampv1 "github.com/Sabaniki/bg-switcher/api/v1"
@@ -59,61 +58,61 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		log.Error(err, "msg", "line", util.LINE())
 		return ctrl.Result{}, err
 	}
-	allOk := true
-	for _, group := range bgg.Spec.Groups {
-		for _, bbrouterSpecName := range group.BbRouters {
-			foundBbRouterInStatus := false
-			for _, bbrouterStatus := range bgg.Status.BbRouters {
-				if bbrouterStatus.Name == string(bbrouterSpecName) {
-					foundBbRouterInStatus = true
-				}
-			}
-			if !foundBbRouterInStatus {
-				newBbRouterStatus := seccampv1.BbRouterStatus{
-					Name:    string(bbrouterSpecName),
-					Color:   group.Color,
-					Created: false,
-				}
-				if err := r.ReconcileBgSwitcherLet(ctx, bgg, newBbRouterStatus, group.Color == bgg.Spec.MainColor); err != nil {
-					log.Error(err, "msg", "line", util.LINE())
-					return ctrl.Result{}, err
-				}
-				newBbRouterStatus.Created = true
-				bgg.Status.BbRouters = append(
-					bgg.Status.BbRouters,
-					newBbRouterStatus,
-				)
-				allOk = false
-				res.StatusUpdated = true
-			}
-		}
-	}
-	if !allOk {
-		if res.SpecUpdated {
-			if err := r.Update(ctx, &bgg); err != nil {
-				log.Error(err, "msg", "line", util.LINE())
-				return ctrl.Result{}, err
-			}
-		}
-		if res.StatusUpdated {
-			if err := r.Status().Update(ctx, &bgg); err != nil {
-				log.Error(err, "msg", "line", util.LINE())
-				return ctrl.Result{}, err
-			}
-		}
-		return ctrl.Result{Requeue: true}, nil
-	}
+	// allOk := true
+	// for _, group := range bgg.Spec.Groups {
+	// 	for _, bbrouterSpecName := range group.BbRouters {
+	// 		foundBbRouterInStatus := false
+	// 		for _, bbrouterStatus := range bgg.Status.BbRouters {
+	// 			if bbrouterStatus.Name == string(bbrouterSpecName) {
+	// 				foundBbRouterInStatus = true
+	// 			}
+	// 		}
+	// 		if !foundBbRouterInStatus {
+	// 			newBbRouterStatus := seccampv1.BbRouterStatus{
+	// 				Name:    string(bbrouterSpecName),
+	// 				Color:   group.Color,
+	// 				Created: false,
+	// 			}
+	// 			if err := r.ReconcileBgSwitcherLet(ctx, bgg, newBbRouterStatus, group.Color == bgg.Spec.MainColor); err != nil {
+	// 				log.Error(err, "msg", "line", util.LINE())
+	// 				return ctrl.Result{}, err
+	// 			}
+	// 			newBbRouterStatus.Created = true
+	// 			bgg.Status.BbRouters = append(
+	// 				bgg.Status.BbRouters,
+	// 				newBbRouterStatus,
+	// 			)
+	// 			allOk = false
+	// 			res.StatusUpdated = true
+	// 		}
+	// 	}
+	// }
+	// if !allOk {
+	// 	if res.SpecUpdated {
+	// 		if err := r.Update(ctx, &bgg); err != nil {
+	// 			log.Error(err, "msg", "line", util.LINE())
+	// 			return ctrl.Result{}, err
+	// 		}
+	// 	}
+	// 	if res.StatusUpdated {
+	// 		if err := r.Status().Update(ctx, &bgg); err != nil {
+	// 			log.Error(err, "msg", "line", util.LINE())
+	// 			return ctrl.Result{}, err
+	// 		}
+	// 	}
+	// 	return ctrl.Result{Requeue: true}, nil
+	// }
 
-	if bgg.Spec.MainColor != bgg.Status.MainColor {
-		for _, bbrouter := range bgg.Status.BbRouters {
-			if err := r.ReconcileBgSwitcherLet(ctx, bgg, bbrouter, bbrouter.Color == bgg.Spec.MainColor); err != nil {
-				log.Error(err, "msg", "line", util.LINE())
-				return ctrl.Result{}, err
-			}
-		}
-		bgg.Status.MainColor = bgg.Spec.MainColor
-		res.StatusUpdated = true
-	}
+	// if bgg.Spec.MainColor != bgg.Status.MainColor {
+	// 	for _, bbrouter := range bgg.Status.BbRouters {
+	// 		if err := r.ReconcileBgSwitcherLet(ctx, bgg, bbrouter, bbrouter.Color == bgg.Spec.MainColor); err != nil {
+	// 			log.Error(err, "msg", "line", util.LINE())
+	// 			return ctrl.Result{}, err
+	// 		}
+	// 	}
+	// 	bgg.Status.MainColor = bgg.Spec.MainColor
+	// 	res.StatusUpdated = true
+	// }
 
 	if res.SpecUpdated {
 		if err := r.Update(ctx, &bgg); err != nil {
@@ -130,25 +129,25 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	return ctrl.Result{}, nil
 }
 
-func (r *BgSwitcherReconciler) ReconcileBgSwitcherLet(ctx context.Context, bgg seccampv1.BgSwitcherGroup, info seccampv1.BbRouterStatus, isMain bool) error {
-	log := log.FromContext(ctx)
-	bgs := seccampv1.BgSwitcher{}
-	bgs.SetNamespace(bgg.GetNamespace())
-	bgs.SetName(info.Name)
+func (r *BgSwitcherReconciler) ReconcileBgSwitcherLet(ctx context.Context, bgg seccampv1.BgSwitcherGroup, colorGroups seccampv1.ColorGroup) error {
+	// log := log.FromContext(ctx)
+	// bgs := seccampv1.BgSwitcher{}
+	// bgs.SetNamespace(bgg.GetNamespace())
+	// bgs.SetName(info.Name)
 
-	op, err := ctrl.CreateOrUpdate(ctx, r.Client, &bgs, func() error {
-		bgs.Spec.Color = info.Color
-		bgs.Spec.IsMain = isMain
-		return ctrl.SetControllerReference(&bgg, &bgs, r.Scheme)
-	})
+	// op, err := ctrl.CreateOrUpdate(ctx, r.Client, &bgs, func() error {
+	// 	bgs.Spec.Color = info.Color
+	// 	bgs.Spec.IsMain = isMain
+	// 	return ctrl.SetControllerReference(&bgg, &bgs, r.Scheme)
+	// })
 
-	if err != nil {
-		log.Error(err, "unable to create or update BgSwitcher resource")
-		return err
-	}
-	if op != controllerutil.OperationResultNone {
-		log.Info("reconcile BgSwitcherLet successfully", "op", op)
-	}
+	// if err != nil {
+	// 	log.Error(err, "unable to create or update BgSwitcher resource")
+	// 	return err
+	// }
+	// if op != controllerutil.OperationResultNone {
+	// 	log.Info("reconcile BgSwitcherLet successfully", "op", op)
+	// }
 
 	return nil
 }

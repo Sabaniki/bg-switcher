@@ -21,26 +21,19 @@ import (
 )
 
 type BgSwitcherGroupSpec struct {
-	Groups    []Group `json:"groups"`
-	MainColor string  `json:"mainColor"`
+	Groups  ColorGroup   `json:"groups"`
+	Routers []RouterSpec `json:"routers"`
 }
-
-type Group struct {
-	Color     string         `json:"color"`
-	BbRouters []BbRouterSpec `json:"bbrouters"`
-}
-
-type BbRouterSpec string
+type RouterSpec string
 
 type BgSwitcherGroupStatus struct {
-	BbRouters []BbRouterStatus `json:"bbrouters"`
-	MainColor string           `json:"mainColor"`
+	Groups  ColorGroup `json:"groups"`
+	Routers []string   `json:"routers"`
 }
-
-type BbRouterStatus struct {
-	Name    string `json:"name"`
-	Color   string `json:"color"`
-	Created bool   `json:"created"`
+type RouterStatus struct {
+	Name    string     `json:"name"`
+	Created bool       `json:"created"`
+	Colors  ColorGroup `json:"groups"`
 }
 
 //+kubebuilder:object:root=true

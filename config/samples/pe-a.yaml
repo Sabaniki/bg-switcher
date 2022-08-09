@@ -1,0 +1,10 @@
+apiVersion: seccamp.sabaniki.vsix.wide.ad.jp/v1
+kind: BgSwitcher
+metadata:
+  name: pe-a
+spec:
+  groups:
+    - color: blue
+      weight: 1
+    - color: green
+      weight: 99

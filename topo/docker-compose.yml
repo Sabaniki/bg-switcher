@@ -1,10 +1,10 @@
 version: '3'
 services:
-  Blue-A:
+  EX-A:
     restart: always
     image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
     environment:
-      - NAME=blue-a
+      - NAME=ex-a
       - MADDR=8080
       - PADDR=9090
     privileged: true
@@ -16,11 +16,11 @@ services:
       - /proc:/proc
       - /etc/netns:/etc/netns
 
-  Blue-B:
+  EX-B:
     restart: always
     image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
     environment:
-      - NAME=blue-b
+      - NAME=ex-b
       - MADDR=8081
       - PADDR=9091
     privileged: true
@@ -32,11 +32,11 @@ services:
       - /proc:/proc
       - /etc/netns:/etc/netns
 
-  Blue-C:
+  EX-C:
     restart: always
     image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
     environment:
-      - NAME=blue-c
+      - NAME=ex-c
       - MADDR=8082
       - PADDR=9092
     privileged: true
@@ -48,11 +48,11 @@ services:
       - /proc:/proc
       - /etc/netns:/etc/netns
 
-  Green-A:
+  PE-A:
     restart: always
     image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
     environment:
-      - NAME=green-a
+      - NAME=pe-a
       - MADDR=8083
       - PADDR=9093
     privileged: true
@@ -64,11 +64,11 @@ services:
       - /proc:/proc
       - /etc/netns:/etc/netns
 
-  Green-A:
+  PE-B:
     restart: always
     image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
     environment:
-      - NAME=green-a
+      - NAME=pe-b
       - MADDR=8084
       - PADDR=9094
     privileged: true
@@ -80,11 +80,11 @@ services:
       - /proc:/proc
       - /etc/netns:/etc/netns
 
-  Green-B:
+  PE-C:
     restart: always
     image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
     environment:
-      - NAME=green-b
+      - NAME=pe-c
       - MADDR=8085
       - PADDR=9095
     privileged: true
@@ -95,23 +95,3 @@ services:
       - /var/run:/var/run
       - /proc:/proc
       - /etc/netns:/etc/netns
-
-  Green-C:
-    restart: always
-    image: ghcr.io/sabaniki/seccamp/bg-switcherlet:latest
-    environment:
-      - NAME=green-c
-      - MADDR=8086
-      - PADDR=9096
-    privileged: true
-    user: "0:0"
-    network_mode: host
-    volumes:
-      - /home/sabaniki/.kube/config:/root/.kube/config
-      - /var/run:/var/run
-      - /proc:/proc
-      - /etc/netns:/etc/netns
-networks:
-  default:
-    name: kind
-    external: true

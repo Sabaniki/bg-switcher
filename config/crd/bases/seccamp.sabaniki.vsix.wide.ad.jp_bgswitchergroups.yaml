@@ -34,47 +34,42 @@ spec:
           spec:
             properties:
               groups:
+                properties:
+                  color:
+                    type: string
+                  weight:
+                    type: integer
+                required:
+                - color
+                - weight
+                type: object
+              routers:
                 items:
-                  properties:
-                    bbrouters:
-                      items:
-                        type: string
-                      type: array
-                    color:
-                      type: string
-                  required:
-                  - bbrouters
-                  - color
-                  type: object
+                  type: string
                 type: array
-              mainColor:
-                type: string
             required:
             - groups
-            - mainColor
+            - routers
             type: object
           status:
             properties:
-              bbrouters:
+              groups:
+                properties:
+                  color:
+                    type: string
+                  weight:
+                    type: integer
+                required:
+                - color
+                - weight
+                type: object
+              routers:
                 items:
-                  properties:
-                    color:
-                      type: string
-                    created:
-                      type: boolean
-                    name:
-                      type: string
-                  required:
-                  - color
-                  - created
-                  - name
-                  type: object
+                  type: string
                 type: array
-              mainColor:
-                type: string
             required:
-            - bbrouters
-            - mainColor
+            - groups
+            - routers
             type: object
         type: object
     served: true

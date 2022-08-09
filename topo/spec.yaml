@@ -19,11 +19,6 @@ postinit:
   - cmd: ./set_hosts.sh EA-B
   - cmd: ./set_hosts.sh EA-C
 
-# postfini:
-# - cmds:
-#   - cmd: docker compose down
-# not work↑
-
 nodes:
 - name: Blue-A
   image: sabaniki/frr:latest
@@ -226,15 +221,10 @@ node_configs:
       -c "  neighbor EX-A activate"
       -c "  neighbor EX-A next-hop-self"
       -c "  neighbor EX-A soft-reconfiguration inbound"
-      -c "  neighbor EX-A route-map MED_LEVEL out"
       -c "  neighbor CONSUMERS activate"
       -c "  neighbor CONSUMERS next-hop-self"
       -c "  neighbor CONSUMERS soft-reconfiguration inbound"
-      -c "  neighbor CONSUMERS route-map MED_LEVEL out"
-  - cmd: >-
-      vtysh -c "conf t"
-      -c "route-map MED_LEVEL permit 5"
-      -c " set metric 0"
+
 
 - name: Blue-B
   cmds:
@@ -272,15 +262,9 @@ node_configs:
       -c "  neighbor EX-B activate"
       -c "  neighbor EX-B next-hop-self"
       -c "  neighbor EX-B soft-reconfiguration inbound"
-      -c "  neighbor EX-B route-map MED_LEVEL out"
       -c "  neighbor CONSUMERS activate"
       -c "  neighbor CONSUMERS next-hop-self"
       -c "  neighbor CONSUMERS soft-reconfiguration inbound"
-      -c "  neighbor CONSUMERS route-map MED_LEVEL out"
-  - cmd: >-
-      vtysh -c "conf t"
-      -c "route-map MED_LEVEL permit 5"
-      -c " set metric 0"
 
 - name: Blue-C
   cmds:
@@ -318,15 +302,9 @@ node_configs:
       -c "  neighbor EX-C activate"
       -c "  neighbor EX-C next-hop-self"
       -c "  neighbor EX-C soft-reconfiguration inbound"
-      -c "  neighbor EX-C route-map MED_LEVEL out"
       -c "  neighbor CONSUMERS activate"
       -c "  neighbor CONSUMERS next-hop-self"
       -c "  neighbor CONSUMERS soft-reconfiguration inbound"
-      -c "  neighbor CONSUMERS route-map MED_LEVEL out"
-  - cmd: >-
-      vtysh -c "conf t"
-      -c "route-map MED_LEVEL permit 5"
-      -c " set metric 0"
       
 - name: Green-A
   cmds:
@@ -364,15 +342,9 @@ node_configs:
       -c "  neighbor EX-A activate"
       -c "  neighbor EX-A next-hop-self"
       -c "  neighbor EX-A soft-reconfiguration inbound"
-      -c "  neighbor EX-A route-map MED_LEVEL out"
       -c "  neighbor CONSUMERS activate"
       -c "  neighbor CONSUMERS next-hop-self"
       -c "  neighbor CONSUMERS soft-reconfiguration inbound"
-      -c "  neighbor CONSUMERS route-map MED_LEVEL out"
-  - cmd: >-
-      vtysh -c "conf t"
-      -c "route-map MED_LEVEL permit 5"
-      -c " set metric 10"
 
 - name: Green-B
   cmds:
@@ -410,15 +382,9 @@ node_configs:
       -c "  neighbor EX-B activate"
       -c "  neighbor EX-B next-hop-self"
       -c "  neighbor EX-B soft-reconfiguration inbound"
-      -c "  neighbor EX-B route-map MED_LEVEL out"
       -c "  neighbor CONSUMERS activate"
       -c "  neighbor CONSUMERS next-hop-self"
       -c "  neighbor CONSUMERS soft-reconfiguration inbound"
-      -c "  neighbor CONSUMERS route-map MED_LEVEL out"
-  - cmd: >-
-      vtysh -c "conf t"
-      -c "route-map MED_LEVEL permit 5"
-      -c " set metric 10"
 
 - name: Green-C
   cmds:
@@ -456,15 +422,9 @@ node_configs:
       -c "  neighbor EX-C activate"
       -c "  neighbor EX-C next-hop-self"
       -c "  neighbor EX-C soft-reconfiguration inbound"
-      -c "  neighbor EX-C route-map MED_LEVEL out"
       -c "  neighbor CONSUMERS activate"
       -c "  neighbor CONSUMERS next-hop-self"
       -c "  neighbor CONSUMERS soft-reconfiguration inbound"
-      -c "  neighbor CONSUMERS route-map MED_LEVEL out"
-  - cmd: >-
-      vtysh -c "conf t"
-      -c "route-map MED_LEVEL permit 5"
-      -c " set metric 10"
 
 - name: EX-A
   cmds:
@@ -491,6 +451,8 @@ node_configs:
       -c " neighbor EX-AS local-as 65000 no-prepend"
       -c " neighbor blue-a interface peer-group BB-BLUE"
       -c " neighbor green-a interface peer-group BB-GREEN"
+      -c " neighbor blue-a route-map WEIGHT_LEVEL_BLUE out"
+      -c " neighbor green-a interface WEIGHT_LEVEL_GREEN out"
       -c " neighbor ea-a interface peer-group EX-AS"
   - cmd: >-
       vtysh -c "conf t"
@@ -507,6 +469,14 @@ node_configs:
       -c "  neighbor EX-AS activate"
       -c "  neighbor EX-AS next-hop-self"
       -c "  neighbor EX-AS soft-reconfiguration inbound"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map WEIGHT_LEVEL_BLUE permit 5"
+      -c " set extcommunity bandwidth 1"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map WEIGHT_LEVEL_GREEN permit 10"
+      -c " set extcommunity bandwidth 9"
 
 - name: EX-B
   cmds:
@@ -533,6 +503,8 @@ node_configs:
       -c " neighbor EX-AS local-as 65000 no-prepend"
       -c " neighbor blue-b interface peer-group BB-BLUE"
       -c " neighbor green-b interface peer-group BB-GREEN"
+      -c " neighbor blue-a route-map WEIGHT_LEVEL_BLUE out"
+      -c " neighbor green-a interface WEIGHT_LEVEL_GREEN out"
       -c " neighbor ea-b interface peer-group EX-AS"
   - cmd: >-
       vtysh -c "conf t"
@@ -549,6 +521,14 @@ node_configs:
       -c "  neighbor EX-AS activate"
       -c "  neighbor EX-AS next-hop-self"
       -c "  neighbor EX-AS soft-reconfiguration inbound"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map WEIGHT_LEVEL_BLUE permit 5"
+      -c " set extcommunity bandwidth 1"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map WEIGHT_LEVEL_GREEN permit 10"
+      -c " set extcommunity bandwidth 9"
 
 - name: EX-C
   cmds:
@@ -575,6 +555,8 @@ node_configs:
       -c " neighbor EX-AS local-as 65000 no-prepend"
       -c " neighbor blue-c interface peer-group BB-BLUE"
       -c " neighbor green-c interface peer-group BB-GREEN"
+      -c " neighbor blue-a route-map WEIGHT_LEVEL_BLUE out"
+      -c " neighbor green-a interface WEIGHT_LEVEL_GREEN out"
       -c " neighbor ea-c interface peer-group EX-AS"
   - cmd: >-
       vtysh -c "conf t"
@@ -591,6 +573,14 @@ node_configs:
       -c "  neighbor EX-AS activate"
       -c "  neighbor EX-AS next-hop-self"
       -c "  neighbor EX-AS soft-reconfiguration inbound"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map WEIGHT_LEVEL_BLUE permit 5"
+      -c " set extcommunity bandwidth 1"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map WEIGHT_LEVEL_GREEN permit 10"
+      -c " set extcommunity bandwidth 9"
 
 - name: PE-A
   cmds:
@@ -611,6 +601,8 @@ node_configs:
       -c " neighbor BB remote-as 65000"
       -c " neighbor blue-a interface peer-group BB"
       -c " neighbor green-a interface peer-group BB"
+      -c " neighbor blue-a route-map WEIGHT_LEVEL_BLUE out"
+      -c " neighbor green-a interface WEIGHT_LEVEL_GREEN out"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64701"
@@ -618,6 +610,15 @@ node_configs:
       -c "  redistribute connected"
       -c "  neighbor BB activate"
       -c "  neighbor BB soft-reconfiguration inbound"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map WEIGHT_LEVEL_BLUE permit 5"
+      -c " set extcommunity bandwidth 1"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map WEIGHT_LEVEL_GREEN permit 10"
+      -c " set extcommunity bandwidth 9"
+
 - name: PE-B
   cmds:
   - cmd: >-
@@ -637,6 +638,8 @@ node_configs:
       -c " neighbor BB remote-as 65000"
       -c " neighbor blue-b interface peer-group BB"
       -c " neighbor green-b interface peer-group BB"
+      -c " neighbor blue-a route-map WEIGHT_LEVEL_BLUE out"
+      -c " neighbor green-a interface WEIGHT_LEVEL_GREEN out"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64702"
@@ -644,6 +647,15 @@ node_configs:
       -c "  redistribute connected"
       -c "  neighbor BB activate"
       -c "  neighbor BB soft-reconfiguration inbound"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map WEIGHT_LEVEL_BLUE permit 5"
+      -c " set extcommunity bandwidth 1"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map WEIGHT_LEVEL_GREEN permit 10"
+      -c " set extcommunity bandwidth 9"
+
 - name: PE-C
   cmds:
   - cmd: >-
@@ -663,6 +675,8 @@ node_configs:
       -c " neighbor BB remote-as 65000"
       -c " neighbor blue-c interface peer-group BB"
       -c " neighbor green-c interface peer-group BB"
+      -c " neighbor blue-a route-map WEIGHT_LEVEL_BLUE out"
+      -c " neighbor green-a interface WEIGHT_LEVEL_GREEN out"
   - cmd: >-
       vtysh -c "conf t"
       -c "router bgp 64703"
@@ -670,6 +684,14 @@ node_configs:
       -c "  redistribute connected"
       -c "  neighbor BB activate"
       -c "  neighbor BB soft-reconfiguration inbound"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map WEIGHT_LEVEL_BLUE permit 5"
+      -c " set extcommunity bandwidth 1"
+  - cmd: >-
+      vtysh -c "conf t"
+      -c "route-map WEIGHT_LEVEL_GREEN permit 10"
+      -c " set extcommunity bandwidth 9"
 
 - name: CM-A
   cmds:
