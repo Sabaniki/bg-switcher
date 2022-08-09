@@ -1,6 +1,23 @@
-# postinit:
-# - cmds:
-#   - cmd: docker compose up -d
+postinit:
+- cmds:
+  - cmd: ./set_hosts.sh Blue-A
+  - cmd: ./set_hosts.sh Blue-B
+  - cmd: ./set_hosts.sh Blue-C
+  - cmd: ./set_hosts.sh Green-A
+  - cmd: ./set_hosts.sh Green-B
+  - cmd: ./set_hosts.sh Green-C
+  - cmd: ./set_hosts.sh EX-A
+  - cmd: ./set_hosts.sh EX-B
+  - cmd: ./set_hosts.sh EX-C
+  - cmd: ./set_hosts.sh PE-A
+  - cmd: ./set_hosts.sh PE-B
+  - cmd: ./set_hosts.sh PE-C
+  - cmd: ./set_hosts.sh CM-A
+  - cmd: ./set_hosts.sh CM-B
+  - cmd: ./set_hosts.sh CM-C
+  - cmd: ./set_hosts.sh EA-A
+  - cmd: ./set_hosts.sh EA-B
+  - cmd: ./set_hosts.sh EA-C
 
 # postfini:
 # - cmds:

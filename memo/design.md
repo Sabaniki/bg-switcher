@@ -56,18 +56,84 @@ spec:
   groups:
     - color: blue
       weight: 10
-      # flowspec つかうとか？
-      bbrouters:
-        - blue-a
-        - blue-b
-        - blue-c
     - color: green
       weight: 90
-      bbrouters:
-        - green-a
-        - green-b
-        - green-c
-  # mainColor: green
+  routers:
+    - EX-A
+    - EX-B
+    - EX-C
+    - PE-A
+    - PE-B
+    - PE-C
+
+status:
+  groups:
+    - color: blue
+      weight: 10
+    - color: green
+      weight: 90
+  routers:
+    - router:
+      name: PE-A
+      created: true
+      - color: blue
+        weight: 10
+      - color: green
+        weight: 90
+    - router:
+      name: PE-B
+      created: true
+      - color: blue
+        weight: 10
+      - color: green
+        weight: 90
+    - router:
+      name: PE-C
+      created: true
+      - color: blue
+        weight: 10
+      - color: green
+        weight: 90
+    - router:
+      name: EX-A
+      created: true
+      - color: blue
+        weight: 10
+      - color: green
+        weight: 90
+    - router:
+      name: EX-B
+      created: true
+      - color: blue
+        weight: 10
+      - color: green
+        weight: 90
+    - router:
+      name: EX-C
+      created: true
+      - color: blue
+        weight: 10
+      - color: green
+        weight: 90
+```
+
+```yaml
+apiVersion: seccamp.sabaniki.vsix.wide.ad.jp/v1
+kind: BgSwitcher
+metadata:
+  name: EX-A
+spec:
+  groups:
+    - color: blue
+      weight: 10
+    - color: green
+      weight: 90
+  status:
+  groups:
+    - color: blue
+      weight: 10
+    - color: green
+      weight: 90
 ```
 - weight を指定するとそれに応じた割合で首を振る
   - 外から内側へ始めた通信は
@@ -77,7 +143,7 @@ spec:
     - EX-{A/B/C}，PE-{A/B/C} に分散コントローラを設置する
       - EX ... 外向きの通信，トランジット通信を曲げる
       - PE ... AS の中の顧客の通信を曲げる
-    - その分散コントローラが自分自身の `route-map WIEGHT_LEVEL permit 5` を編集する
+    - その分散コントローラが自分自身の `route-map WIEGHT_BLUE permit 5` 及び `route-map WIEGHT_GREEN permit 10` を編集する
   - BB に現在 MED の設定をしている route-map は削除する
 
 

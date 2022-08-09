@@ -30,5 +30,16 @@ Command Output: failed to save image: invalid output path: directory "/tmp/image
 - [x] Stakeholderリスト作る
 - [x] CE->PE名前を変える
 - [x] EnvとかCli-argつかって, imageを共通化
-- [ ] N% deployをどういうoperation体験でやるかどうかを整理する.
+- [x] N% deployをどういうoperation体験でやるかどうかを整理する
+  - [x] 要素の検証
 - [ ] /etc/hosts にルータ書いて traceroute の結果を見やすく
+
+## 2022/08/09 午後
+- [ ] N% deploy実装
+  - [x] よく考えたらデータ構造が大きく変わるので考える
+    - [x] group の spec
+    - [x] group の status
+    - [x] let の spec
+    - [x] let の status
+  - [ ] まずは let の方が自分に設定を入れることができる
+    - [ ] 
