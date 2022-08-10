@@ -52,13 +52,7 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		log.Error(err, "msg", "line", util.LINE())
 		return ctrl.Result{}, err
 	}
-	if err := r.Get(ctx, req.NamespacedName, &bgg); err != nil {
-		if errors.IsNotFound(err) {
-			return ctrl.Result{}, nil
-		}
-		log.Error(err, "msg", "line", util.LINE())
-		return ctrl.Result{}, err
-	}
+
 	allOk := true
 	for _, group := range bgg.Spec.Groups {
 		for _, bbrouterSpecName := range group.BbRouters {
@@ -105,16 +99,6 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		return ctrl.Result{Requeue: true}, nil
 	}
 
-	// if bgg.Spec.MainColor != bgg.Status.MainColor {
-	// 	for _, bbrouter := range bgg.Status.BbRouters {
-	// 		if err := r.ReconcileBgSwitcherLet(ctx, bgg, bbrouter, bbrouter.Color == bgg.Spec.MainColor); err != nil {
-	// 			log.Error(err, "msg", "line", util.LINE())
-	// 			return ctrl.Result{}, err
-	// 		}
-	// 	}
-	// 	bgg.Status.MainColor = bgg.Spec.MainColor
-	// 	res.StatusUpdated = true
-	// }
 	for _, group := range bgg.Spec.Groups {
 		for _, statusRouter := range bgg.Status.BbRouters {
 			if group.Color == statusRouter.Color && group.Weight != statusRouter.Weight {

@@ -1,0 +1,24 @@
+# permissions for end users to edit bgswitchercanaries.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: bgswitchercanary-editor-role
+rules:
+- apiGroups:
+  - seccamp.sabaniki.vsix.wide.ad.jp
+  resources:
+  - bgswitchercanaries
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - seccamp.sabaniki.vsix.wide.ad.jp
+  resources:
+  - bgswitchercanaries/status
+  verbs:
+  - get

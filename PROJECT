@@ -21,4 +21,13 @@ resources:
   kind: BgSwitcherGroup
   path: github.com/Sabaniki/bg-switcher/api/v1
   version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: sabaniki.vsix.wide.ad.jp
+  group: seccamp
+  kind: BgSwitcherCanary
+  path: github.com/Sabaniki/bg-switcher/api/v1
+  version: v1
 version: "3"

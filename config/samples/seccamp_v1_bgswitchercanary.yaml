@@ -1,0 +1,6 @@
+apiVersion: seccamp.sabaniki.vsix.wide.ad.jp/v1
+kind: BgSwitcherCanary
+metadata:
+  name: bgswitchercanary-sample
+spec:
+  # TODO(user): Add fields here

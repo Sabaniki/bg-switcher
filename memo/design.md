@@ -136,6 +136,10 @@ spec:
         - green-a
         - green-b
         - green-c
+
+status:
+  groups:
+    - 
 ```
 
 ```yaml
@@ -149,7 +153,8 @@ spec:
       weight: 10
     - color: green
       weight: 90
-  status:
+
+status:
   groups:
     - color: blue
       weight: 10
@@ -430,6 +435,7 @@ spec:
       - bbrouter: blue-c
     - group:
       color: green
+      weght: 90
       - bbrouter: green-a
       - bbrouter: green-b
       - bbrouter: green-c
@@ -475,5 +481,61 @@ spec:
 ```yaml
 status:
   color: green
-  med: 10
+  weight: 10
+```
+
+
+
+
+
+```yaml
+spec:
+  groups:
+    - group:
+      color: blue
+      weght: 10
+      - bbrouter: blue-a
+      - bbrouter: blue-b
+      - bbrouter: blue-c
+    - group:
+      color: green
+      weght: 10
+      - bbrouter: green-a
+      - bbrouter: green-b
+      - bbrouter: green-c
+  mainColor: blue
+
+  status:
+  bbrouters:
+    - bbrouter:
+      name: blue-a
+      color: blue
+      weight: 10
+      created: true
+    - bbrouter:
+      name: blue-b
+      color: blue
+      weight: 10
+      created: true
+    - bbrouter:
+      name: blue-c
+      color: blue
+      weight: 10
+      created: true
+    - bbrouter:
+      name: green-a
+      color: green
+      weight: 90
+      created: true
+    - bbrouter:
+      name: green-b
+      color: green
+      weight: 90
+      created: true
+    - bbrouter:
+      name: green-c
+      color: green
+      weight: 90
+      created: true
+  mainColor: blue
 ```
