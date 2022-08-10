@@ -5,13 +5,13 @@ metadata:
 spec:
   groups:
     - color: blue
-      weight: 40
+      weight: 90
       bbrouters:
         - blue-a
         - blue-b
         - blue-c
     - color: green
-      weight: 60
+      weight: 10
       bbrouters:
         - green-a
         - green-b

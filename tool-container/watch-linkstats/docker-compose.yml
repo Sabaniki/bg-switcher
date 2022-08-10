@@ -1,0 +1,31 @@
+version: '3'
+services:
+  EX-A:
+    image: watch-linkstats
+    network_mode: container:EX-A
+    privileged: true
+
+  EX-B:
+    image: watch-linkstats
+    network_mode: container:EX-B
+    privileged: true
+
+  EX-C:
+    image: watch-linkstats
+    network_mode: container:EX-C
+    privileged: true
+
+  PE-A:
+    image: watch-linkstats
+    network_mode: container:PE-A
+    privileged: true
+
+  PE-B:
+    image: watch-linkstats
+    network_mode: container:PE-B
+    privileged: true
+
+  PE-C:
+    image: watch-linkstats
+    network_mode: container:PE-C
+    privileged: true
