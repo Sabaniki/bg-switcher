@@ -26,13 +26,13 @@ import (
 // BgSwitcherSpec defines the desired state of BgSwitcher
 type BgSwitcherSpec struct {
 	Color  string `json:"color"`
-	IsMain bool   `json:"isMain"`
+	Weight int    `json:"weight"`
 }
 
 // BgSwitcherStatus defines the observed state of BgSwitcher
 type BgSwitcherStatus struct {
-	Color string `json:"color"`
-	Med   int    `json:"med"`
+	Color  string `json:"color"`
+	Weight int    `json:"weight"`
 }
 
 //+kubebuilder:object:root=true
