@@ -21,12 +21,12 @@ import (
 )
 
 type BgSwitcherGroupSpec struct {
-	Groups    []Group `json:"groups"`
-	MainColor string  `json:"mainColor"`
+	Groups []Group `json:"groups"`
 }
 
 type Group struct {
 	Color     string         `json:"color"`
+	Weight    int            `json:"weight"`
 	BbRouters []BbRouterSpec `json:"bbrouters"`
 }
 
@@ -34,12 +34,12 @@ type BbRouterSpec string
 
 type BgSwitcherGroupStatus struct {
 	BbRouters []BbRouterStatus `json:"bbrouters"`
-	MainColor string           `json:"mainColor"`
 }
 
 type BbRouterStatus struct {
 	Name    string `json:"name"`
 	Color   string `json:"color"`
+	Weight  int    `json:"weight"`
 	Created bool   `json:"created"`
 }
 

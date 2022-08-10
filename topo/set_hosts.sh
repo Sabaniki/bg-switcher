@@ -1,13 +1,13 @@
 #!/bin/zsh
-docker exec -it $1 bash -c "
+docker exec $1 bash -c "
 cat <<EOF > /etc/hosts
 2001:db8:6500:100:ace::1 lo.Blue-A
 2001:db8:6500:100:cafe::1 lo.Blue-B
 2001:db8:6500:100:beef::1 lo.Blue-C
 
-2001:db8:6500:200:ace::1 lo.Blue-A
-2001:db8:6500:200:cafe::1 lo.Blue-B
-2001:db8:6500:200:beef::1 lo.Blue-C
+2001:db8:6500:200:ace::1 lo.Green-A
+2001:db8:6500:200:cafe::1 lo.Green-B
+2001:db8:6500:200:beef::1 lo.Green-C
 
 2001:db8:6500:6451::1 lo.EX-A
 2001:db8:6500:6452::1 lo.EX-B

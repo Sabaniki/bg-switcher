@@ -48,6 +48,76 @@
 ## n% deploy
 - データモデル
 ```yaml
+# apiVersion: seccamp.sabaniki.vsix.wide.ad.jp/v1
+# kind: BgSwitcherGroup
+# metadata:
+#   name: bgswitchergroup-sample
+# spec:
+#   groups:
+#     - color: blue
+#       weight: 10
+#     - color: green
+#       weight: 90
+#   routers:
+#     - EX-A
+#     - EX-B
+#     - EX-C
+#     - PE-A
+#     - PE-B
+#     - PE-C
+
+# status:
+#   groups:
+#     - color: blue
+#       weight: 10
+#     - color: green
+#       weight: 90
+#   routers:
+#     - router:
+#       name: PE-A
+#       created: true
+#       - color: blue
+#         weight: 10
+#       - color: green
+#         weight: 90
+#     - router:
+#       name: PE-B
+#       created: true
+#       - color: blue
+#         weight: 10
+#       - color: green
+#         weight: 90
+#     - router:
+#       name: PE-C
+#       created: true
+#       - color: blue
+#         weight: 10
+#       - color: green
+#         weight: 90
+#     - router:
+#       name: EX-A
+#       created: true
+#       - color: blue
+#         weight: 10
+#       - color: green
+#         weight: 90
+#     - router:
+#       name: EX-B
+#       created: true
+#       - color: blue
+#         weight: 10
+#       - color: green
+#         weight: 90
+#     - router:
+#       name: EX-C
+#       created: true
+#       - color: blue
+#         weight: 10
+#       - color: green
+#         weight: 90
+```
+
+```yaml
 apiVersion: seccamp.sabaniki.vsix.wide.ad.jp/v1
 kind: BgSwitcherGroup
 metadata:
@@ -56,65 +126,16 @@ spec:
   groups:
     - color: blue
       weight: 10
+      bbrouters:
+        - blue-a
+        - blue-b
+        - blue-c
     - color: green
       weight: 90
-  routers:
-    - EX-A
-    - EX-B
-    - EX-C
-    - PE-A
-    - PE-B
-    - PE-C
-
-status:
-  groups:
-    - color: blue
-      weight: 10
-    - color: green
-      weight: 90
-  routers:
-    - router:
-      name: PE-A
-      created: true
-      - color: blue
-        weight: 10
-      - color: green
-        weight: 90
-    - router:
-      name: PE-B
-      created: true
-      - color: blue
-        weight: 10
-      - color: green
-        weight: 90
-    - router:
-      name: PE-C
-      created: true
-      - color: blue
-        weight: 10
-      - color: green
-        weight: 90
-    - router:
-      name: EX-A
-      created: true
-      - color: blue
-        weight: 10
-      - color: green
-        weight: 90
-    - router:
-      name: EX-B
-      created: true
-      - color: blue
-        weight: 10
-      - color: green
-        weight: 90
-    - router:
-      name: EX-C
-      created: true
-      - color: blue
-        weight: 10
-      - color: green
-        weight: 90
+      bbrouters:
+        - green-a
+        - green-b
+        - green-c
 ```
 
 ```yaml
@@ -403,6 +424,7 @@ spec:
   groups:
     - group:
       color: blue
+      weght: 10
       - bbrouter: blue-a
       - bbrouter: blue-b
       - bbrouter: blue-c
@@ -419,18 +441,22 @@ status:
     - bbrouter:
       name: blue-a
       color: blue
+      weight: 10
       created: true
     - bbrouter:
       name: blue-b
       color: blue
+      weight: 10
       created: true
     - bbrouter:
       name: blue-c
       color: blue
+      weight: 10
       created: true
     - bbrouter:
       name: green-a
       color: green
+      weight: 10
       created: true
   mainColor: blue
 ```
@@ -444,7 +470,7 @@ status:
 ```yaml
 spec:
   color: green
-  isMain: false
+  weight: 10
 ```
 ```yaml
 status:
