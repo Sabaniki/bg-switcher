@@ -28,6 +28,7 @@ type BgSwitcherCanarySpec struct {
 	Groups    []ColorGroup `json:"groups"`
 	MainColor string       `json:"mainColor"`
 	Duration  int          `json:"duration"` //秒
+	Variation int          `json:"variation"`
 }
 
 type ColorGroup struct {
@@ -42,6 +43,7 @@ type BgSwitcherCanaryStatus struct {
 	AllCreated    bool        `json:"allCreated"`
 	NextTimestamp metav1.Time `json:"nextTimeStamp"`
 	LastTimestamp metav1.Time `json:"lastTimeStamp"`
+	Spent         int         `json:"spent"`
 }
 
 //+kubebuilder:object:root=true

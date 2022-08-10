@@ -54,29 +54,26 @@ func (r *BgSwitcherCanaryReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		log.Error(err, "msg", "line", util.LINE())
 		return ctrl.Result{}, err
 	}
-	if err := r.Get(ctx, req.NamespacedName, &bgc); err != nil {
-		if errors.IsNotFound(err) {
-			return ctrl.Result{}, nil
-		}
-		log.Error(err, "msg", "line", util.LINE())
-		return ctrl.Result{}, err
-	}
 
 	// 少なくとも時間要件を満たしていたらリコンサイルする
-	acceptReconcile := bgc.Status.NextTimestamp.After(metav1.Now().Time)
+	acceptReconcile := bgc.Status.NextTimestamp.Before(&metav1.Time{Time: time.Now()})
 	if bgc.Status.MainColor != bgc.Spec.MainColor {
+		log.Info("main color is not same", "line", util.LINE())
 		bgc.Status.MainColor = bgc.Spec.MainColor
-		res.SpecUpdated = true
+		res.StatusUpdated = true
 		acceptReconcile = true
 	}
 
 	if !acceptReconcile {
 		bgc.Status.LastTimestamp = metav1.Now()
+		bgc.Status.Spent += 1 // 適当
 		if err := r.Status().Update(ctx, &bgc); err != nil {
 			log.Error(err, "msg", "line", util.LINE())
 			return ctrl.Result{}, err
 		}
+		return ctrl.Result{RequeueAfter: time.Second * 1}, nil
 	}
+	log.Info("it is time to reconcile", "line", util.LINE())
 
 	allOk := true
 	for _, specGroup := range bgc.Spec.Groups {
@@ -102,7 +99,14 @@ func (r *BgSwitcherCanaryReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		}
 	}
 
+	now := metav1.Now()
+	bgc.Status.LastTimestamp = now
+	next := bgc.Spec.Duration / bgc.Spec.Variation
+	bgc.Status.NextTimestamp = metav1.NewTime(now.Add(time.Second * time.Duration(next)))
+	bgc.Status.Spent += 1 // 適当
+
 	if !allOk {
+		// pp.Println(bgc)
 		if res.SpecUpdated {
 			if err := r.Update(ctx, &bgc); err != nil {
 				log.Error(err, "msg", "line", util.LINE())
@@ -117,10 +121,30 @@ func (r *BgSwitcherCanaryReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		}
 		return ctrl.Result{Requeue: true}, nil
 	}
+	newGroups := []seccampv1.Group{}
+	for _, statusGroup := range bgc.Status.Groups {
+		weight := statusGroup.Weight
+		if bgc.Spec.MainColor == statusGroup.Color {
+			weight += bgc.Spec.Variation
+		} else {
+			weight -= bgc.Spec.Variation
+		}
+		if 99 < weight {
+			weight = 99
+		} else if weight < 1 {
+			weight = 1
+		}
+		newGroup := seccampv1.Group{
+			Color:     statusGroup.Color,
+			Weight:    weight,
+			BbRouters: statusGroup.BbRouters,
+		}
+		// bgc.Status.Groups = append(bgc.Status.Groups, newGroup)
+		newGroups = append(newGroups, newGroup)
+	}
+	bgc.Status.Groups = newGroups
+	res.StatusUpdated = true
 
-	now := metav1.Now()
-	bgc.Status.LastTimestamp = now
-	bgc.Status.NextTimestamp = metav1.NewTime(now.Add(5 * time.Second))
 	if res.SpecUpdated {
 		if err := r.Update(ctx, &bgc); err != nil {
 			log.Error(err, "msg", "line", util.LINE())

@@ -1,0 +1,108 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.9.2
+  creationTimestamp: null
+  name: bgswitchercanaries.seccamp.sabaniki.vsix.wide.ad.jp
+spec:
+  group: seccamp.sabaniki.vsix.wide.ad.jp
+  names:
+    kind: BgSwitcherCanary
+    listKind: BgSwitcherCanaryList
+    plural: bgswitchercanaries
+    singular: bgswitchercanary
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description: BgSwitcherCanary is the Schema for the bgswitchercanaries API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: BgSwitcherCanarySpec defines the desired state of BgSwitcherCanary
+            properties:
+              duration:
+                type: integer
+              groups:
+                items:
+                  properties:
+                    bbrouters:
+                      items:
+                        type: string
+                      type: array
+                    color:
+                      type: string
+                  required:
+                  - bbrouters
+                  - color
+                  type: object
+                type: array
+              mainColor:
+                type: string
+              variation:
+                type: integer
+            required:
+            - duration
+            - groups
+            - mainColor
+            - variation
+            type: object
+          status:
+            description: BgSwitcherCanaryStatus defines the observed state of BgSwitcherCanary
+            properties:
+              allCreated:
+                type: boolean
+              groups:
+                items:
+                  properties:
+                    bbrouters:
+                      items:
+                        type: string
+                      type: array
+                    color:
+                      type: string
+                    weight:
+                      type: integer
+                  required:
+                  - bbrouters
+                  - color
+                  - weight
+                  type: object
+                type: array
+              lastTimeStamp:
+                format: date-time
+                type: string
+              mainColor:
+                type: string
+              nextTimeStamp:
+                format: date-time
+                type: string
+              spent:
+                type: integer
+            required:
+            - allCreated
+            - groups
+            - lastTimeStamp
+            - mainColor
+            - nextTimeStamp
+            - spent
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

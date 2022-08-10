@@ -1,0 +1,20 @@
+apiVersion: seccamp.sabaniki.vsix.wide.ad.jp/v1
+kind: BgSwitcherCanary
+metadata:
+  name: canary
+spec:
+spec:
+  groups:
+    - color: blue
+      bbrouters:
+        - blue-a
+        - blue-b
+        - blue-c
+    - color: green
+      bbrouters:
+        - green-a
+        - green-b
+        - green-c
+  mainColor: green
+  duration: 60
+  variation: 10
