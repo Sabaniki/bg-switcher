@@ -37,22 +37,22 @@ spec:
             properties:
               color:
                 type: string
-              isMain:
-                type: boolean
+              weight:
+                type: integer
             required:
             - color
-            - isMain
+            - weight
             type: object
           status:
             description: BgSwitcherStatus defines the observed state of BgSwitcher
             properties:
               color:
                 type: string
-              med:
+              weight:
                 type: integer
             required:
             - color
-            - med
+            - weight
             type: object
         type: object
     served: true

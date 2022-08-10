@@ -82,27 +82,24 @@ func (r *BgSwitcherLetReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		}
 		return ctrl.Result{}, nil
 	}
-	med, err := getMed(containerName)
+	weight, err := getWeight(containerName)
 	if err != nil {
 		log.Error(err, "msg", "line", util.LINE())
 		return ctrl.Result{}, err
 	}
 
 	changedMed := false
-	if bgs.Spec.IsMain && med != 0 {
-		setMed(containerName, 0)
-		changedMed = true
-	} else if !bgs.Spec.IsMain && med == 0 {
-		setMed(containerName, 10)
+	if weight != bgs.Spec.Weight {
+		setWeight(containerName, bgs.Spec.Weight)
 		changedMed = true
 	}
 	if changedMed {
-		currentMed, err := getMed(containerName)
+		currentWeight, err := getWeight(containerName)
 		if err != nil {
 			log.Error(err, "msg", "line", util.LINE())
 			return ctrl.Result{}, err
 		}
-		bgs.Status.Med = currentMed
+		bgs.Status.Weight = currentWeight
 		res.StatusUpdated = true
 	}
 
@@ -133,14 +130,14 @@ func (r *BgSwitcherLetReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func getMed(containerName string) (int, error) {
-	// docker exec Blue-A vtysh -c 'show route-map json' | jq ".BGP" | jq "select(type != \"null\")" | jq ".MED_LEVEL.rules[0].setClauses[]"
+func getWeight(containerName string) (int, error) {
+	// docker exec PE-A vtysh -c 'show route-map json' | jq ".BGP" | jq "select(type != \"null\")" | jq ".WEIGHT_LEVEL_{COLOR}.rules[0].setClauses[]"
 	res, err := executer.ExecShowCommand(
 		containerName,
 		"route-map",
 		".BGP",
 		"select(type != \"null\")",
-		".MED_LEVEL.rules[0].setClauses[]",
+		".WEIGHT_LEVEL.rules[0].setClauses[]",
 	)
 	if err != nil {
 		return -1, err
@@ -153,11 +150,11 @@ func getMed(containerName string) (int, error) {
 	return int(num), nil
 }
 
-func setMed(containerName string, med int) error {
+func setWeight(containerName string, weight int) error {
 	err := executer.ExecCommand(
 		containerName,
-		"route-map MED_LEVEL permit 5",
-		"set metric "+strconv.Itoa(med),
+		"route-map WEIGHT_LEVEL permit 5",
+		"set extcommunity bandwidth "+strconv.Itoa(weight),
 	)
 	return err
 }

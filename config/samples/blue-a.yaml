@@ -4,4 +4,4 @@ metadata:
   name: blue-a
 spec:
   color: blue
-  isMain: true
+  weight: 10

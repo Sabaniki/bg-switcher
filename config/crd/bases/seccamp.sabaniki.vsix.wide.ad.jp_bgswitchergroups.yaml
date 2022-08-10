@@ -42,16 +42,16 @@ spec:
                       type: array
                     color:
                       type: string
+                    weight:
+                      type: integer
                   required:
                   - bbrouters
                   - color
+                  - weight
                   type: object
                 type: array
-              mainColor:
-                type: string
             required:
             - groups
-            - mainColor
             type: object
           status:
             properties:
@@ -64,17 +64,17 @@ spec:
                       type: boolean
                     name:
                       type: string
+                    weight:
+                      type: integer
                   required:
                   - color
                   - created
                   - name
+                  - weight
                   type: object
                 type: array
-              mainColor:
-                type: string
             required:
             - bbrouters
-            - mainColor
             type: object
         type: object
     served: true

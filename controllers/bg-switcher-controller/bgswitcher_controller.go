@@ -73,8 +73,9 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 					Name:    string(bbrouterSpecName),
 					Color:   group.Color,
 					Created: false,
+					Weight:  group.Weight,
 				}
-				if err := r.ReconcileBgSwitcherLet(ctx, bgg, newBbRouterStatus, group.Color == bgg.Spec.MainColor); err != nil {
+				if err := r.ReconcileBgSwitcherLet(ctx, bgg, newBbRouterStatus, group.Weight); err != nil {
 					log.Error(err, "msg", "line", util.LINE())
 					return ctrl.Result{}, err
 				}
@@ -104,15 +105,25 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		return ctrl.Result{Requeue: true}, nil
 	}
 
-	if bgg.Spec.MainColor != bgg.Status.MainColor {
-		for _, bbrouter := range bgg.Status.BbRouters {
-			if err := r.ReconcileBgSwitcherLet(ctx, bgg, bbrouter, bbrouter.Color == bgg.Spec.MainColor); err != nil {
-				log.Error(err, "msg", "line", util.LINE())
-				return ctrl.Result{}, err
+	// if bgg.Spec.MainColor != bgg.Status.MainColor {
+	// 	for _, bbrouter := range bgg.Status.BbRouters {
+	// 		if err := r.ReconcileBgSwitcherLet(ctx, bgg, bbrouter, bbrouter.Color == bgg.Spec.MainColor); err != nil {
+	// 			log.Error(err, "msg", "line", util.LINE())
+	// 			return ctrl.Result{}, err
+	// 		}
+	// 	}
+	// 	bgg.Status.MainColor = bgg.Spec.MainColor
+	// 	res.StatusUpdated = true
+	// }
+	for _, group := range bgg.Spec.Groups {
+		for _, statusRouter := range bgg.Status.BbRouters {
+			if group.Color == statusRouter.Color && group.Weight != statusRouter.Weight {
+				if err := r.ReconcileBgSwitcherLet(ctx, bgg, statusRouter, group.Weight); err != nil {
+					log.Error(err, "msg", "line", util.LINE())
+					return ctrl.Result{}, err
+				}
 			}
 		}
-		bgg.Status.MainColor = bgg.Spec.MainColor
-		res.StatusUpdated = true
 	}
 
 	if res.SpecUpdated {
@@ -130,7 +141,7 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	return ctrl.Result{}, nil
 }
 
-func (r *BgSwitcherReconciler) ReconcileBgSwitcherLet(ctx context.Context, bgg seccampv1.BgSwitcherGroup, info seccampv1.BbRouterStatus, isMain bool) error {
+func (r *BgSwitcherReconciler) ReconcileBgSwitcherLet(ctx context.Context, bgg seccampv1.BgSwitcherGroup, info seccampv1.BbRouterStatus, weight int) error {
 	log := log.FromContext(ctx)
 	bgs := seccampv1.BgSwitcher{}
 	bgs.SetNamespace(bgg.GetNamespace())
@@ -138,7 +149,7 @@ func (r *BgSwitcherReconciler) ReconcileBgSwitcherLet(ctx context.Context, bgg s
 
 	op, err := ctrl.CreateOrUpdate(ctx, r.Client, &bgs, func() error {
 		bgs.Spec.Color = info.Color
-		bgs.Spec.IsMain = isMain
+		bgs.Spec.Weight = weight
 		return ctrl.SetControllerReference(&bgg, &bgs, r.Scheme)
 	})
 
