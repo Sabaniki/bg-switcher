@@ -234,6 +234,7 @@ node_configs:
       vtysh -c "conf t"
       -c "route-map WEIGHT_LEVEL permit 5"
       -c " set extcommunity bandwidth 10"
+      -c " set metric 10"
 
 - name: Blue-B
   cmds:
@@ -284,6 +285,7 @@ node_configs:
       vtysh -c "conf t"
       -c "route-map WEIGHT_LEVEL permit 5"
       -c " set extcommunity bandwidth 10"
+      -c " set metric 10"
 
 - name: Blue-C
   cmds:
@@ -334,6 +336,7 @@ node_configs:
       vtysh -c "conf t"
       -c "route-map WEIGHT_LEVEL permit 5"
       -c " set extcommunity bandwidth 10"
+      -c " set metric 10"
       
 - name: Green-A
   cmds:
@@ -384,6 +387,7 @@ node_configs:
       vtysh -c "conf t"
       -c "route-map WEIGHT_LEVEL permit 5"
       -c " set extcommunity bandwidth 90"
+      -c " set metric 10"
 
 - name: Green-B
   cmds:
@@ -434,6 +438,7 @@ node_configs:
       vtysh -c "conf t"
       -c "route-map WEIGHT_LEVEL permit 5"
       -c " set extcommunity bandwidth 90"
+      -c " set metric 10"
 
 - name: Green-C
   cmds:
@@ -484,6 +489,7 @@ node_configs:
       vtysh -c "conf t"
       -c "route-map WEIGHT_LEVEL permit 5"
       -c " set extcommunity bandwidth 90"
+      -c " set metric 10"
 
 - name: EX-A
   cmds:

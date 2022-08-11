@@ -47,10 +47,10 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 
 	if err := r.Get(ctx, req.NamespacedName, &bgg); err != nil {
 		if errors.IsNotFound(err) {
-			return ctrl.Result{}, nil
+			return ctrl.Result{Requeue: true}, nil
 		}
 		log.Error(err, "msg", "line", util.LINE())
-		return ctrl.Result{}, err
+		return ctrl.Result{Requeue: true}, err
 	}
 
 	allOk := true
@@ -71,7 +71,7 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 				}
 				if err := r.ReconcileBgSwitcherLet(ctx, bgg, newBbRouterStatus, group.Weight); err != nil {
 					log.Error(err, "msg", "line", util.LINE())
-					return ctrl.Result{}, err
+					return ctrl.Result{Requeue: true}, err
 				}
 				newBbRouterStatus.Created = true
 				bgg.Status.BbRouters = append(
@@ -87,13 +87,13 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		if res.SpecUpdated {
 			if err := r.Update(ctx, &bgg); err != nil {
 				log.Error(err, "msg", "line", util.LINE())
-				return ctrl.Result{}, err
+				return ctrl.Result{Requeue: true}, err
 			}
 		}
 		if res.StatusUpdated {
 			if err := r.Status().Update(ctx, &bgg); err != nil {
 				log.Error(err, "msg", "line", util.LINE())
-				return ctrl.Result{}, err
+				return ctrl.Result{Requeue: true}, err
 			}
 		}
 		return ctrl.Result{Requeue: true}, nil
@@ -101,10 +101,10 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 
 	for _, group := range bgg.Spec.Groups {
 		for _, statusRouter := range bgg.Status.BbRouters {
-			if group.Color == statusRouter.Color && group.Weight != statusRouter.Weight {
+			if group.Color == statusRouter.Color {
 				if err := r.ReconcileBgSwitcherLet(ctx, bgg, statusRouter, group.Weight); err != nil {
 					log.Error(err, "msg", "line", util.LINE())
-					return ctrl.Result{}, err
+					return ctrl.Result{Requeue: true}, err
 				}
 			}
 		}
@@ -113,13 +113,13 @@ func (r *BgSwitcherReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	if res.SpecUpdated {
 		if err := r.Update(ctx, &bgg); err != nil {
 			log.Error(err, "msg", "line", util.LINE())
-			return ctrl.Result{}, err
+			return ctrl.Result{Requeue: true}, err
 		}
 	}
 	if res.StatusUpdated {
 		if err := r.Status().Update(ctx, &bgg); err != nil {
 			log.Error(err, "msg", "line", util.LINE())
-			return ctrl.Result{}, err
+			return ctrl.Result{Requeue: true}, err
 		}
 	}
 	return ctrl.Result{}, nil
@@ -148,11 +148,6 @@ func (r *BgSwitcherReconciler) ReconcileBgSwitcherLet(ctx context.Context, bgg s
 	return nil
 }
 
-// func createOrUpdateBgSwitcherResource(ctx context.Context, nameSpace string, info seccampv1.BbRouterStatus, isMain bool) error {
-
-// }
-
-// SetupWithManager sets up the controller with the Manager.
 func (r *BgSwitcherReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&seccampv1.BgSwitcherGroup{}).

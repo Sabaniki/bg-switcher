@@ -88,12 +88,16 @@ func (r *BgSwitcherLetReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, err
 	}
 
-	changedMed := false
+	changedWeight := false
 	if weight != bgs.Spec.Weight {
-		setWeight(containerName, bgs.Spec.Weight)
-		changedMed = true
+		newWeight := bgs.Spec.Weight
+		if newWeight < 1 {
+			newWeight = 1
+		}
+		setWeight(containerName, newWeight)
+		changedWeight = true
 	}
-	if changedMed {
+	if changedWeight {
 		currentWeight, err := getWeight(containerName)
 		if err != nil {
 			log.Error(err, "msg", "line", util.LINE())
@@ -105,6 +109,30 @@ func (r *BgSwitcherLetReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 
 	if bgs.Spec.Color != bgs.Status.Color {
 		bgs.Status.Color = bgs.Spec.Color
+		res.StatusUpdated = true
+	}
+
+	med, err := getMed(containerName)
+	if err != nil {
+		log.Error(err, "msg", "line", util.LINE())
+		return ctrl.Result{}, err
+	}
+
+	changedMed := false
+	if bgs.Spec.Weight == 100 && med != 0 {
+		setMed(containerName, 0)
+		changedMed = true
+	} else if bgs.Spec.Weight != 100 && med != 10 {
+		setMed(containerName, 10)
+		changedMed = true
+	}
+	if changedMed {
+		currentMed, err := getMed(containerName)
+		if err != nil {
+			log.Error(err, "msg", "line", util.LINE())
+			return ctrl.Result{}, err
+		}
+		bgs.Status.Med = currentMed
 		res.StatusUpdated = true
 	}
 
@@ -131,13 +159,14 @@ func (r *BgSwitcherLetReconciler) SetupWithManager(mgr ctrl.Manager) error {
 }
 
 func getWeight(containerName string) (int, error) {
-	// docker exec PE-A vtysh -c 'show route-map json' | jq ".BGP" | jq "select(type != \"null\")" | jq ".WEIGHT_LEVEL_{COLOR}.rules[0].setClauses[]"
+	// docker exec Blue-A bash -c 'vtysh -c "show route-map json" | jq ".BGP" | jq "select(type != \"null\")" | jq ".WEIGHT_LEVEL.rules[0].setClauses[]" | jq "select(. | startswith(\"ext\"))"'
 	res, err := executer.ExecShowCommand(
 		containerName,
 		"route-map",
 		".BGP",
 		"select(type != \"null\")",
 		".WEIGHT_LEVEL.rules[0].setClauses[]",
+		"select(. | startswith(\"ext\"))",
 	)
 	if err != nil {
 		return -1, err
@@ -155,6 +184,37 @@ func setWeight(containerName string, weight int) error {
 		containerName,
 		"route-map WEIGHT_LEVEL permit 5",
 		"set extcommunity bandwidth "+strconv.Itoa(weight),
+	)
+	return err
+}
+
+func getMed(containerName string) (int, error) {
+	// docker exec Blue-A bash -c 'vtysh -c "show route-map json" | jq ".BGP" | jq "select(type != \"null\")" | jq ".WEIGHT_LEVEL.rules[0].setClauses[]" | jq "select(. | startswith(\"met\"))"'
+
+	res, err := executer.ExecShowCommand(
+		containerName,
+		"route-map",
+		".BGP",
+		"select(type != \"null\")",
+		".WEIGHT_LEVEL.rules[0].setClauses[]",
+		"select(. | startswith(\"met\"))",
+	)
+	if err != nil {
+		return -1, err
+	}
+	rex := regexp.MustCompile("[0-9]+")
+	num, err := strconv.ParseInt(rex.FindString(res), 10, 32)
+	if err != nil {
+		return -1, err
+	}
+	return int(num), nil
+}
+
+func setMed(containerName string, med int) error {
+	err := executer.ExecCommand(
+		containerName,
+		"route-map WEIGHT_LEVEL permit 5",
+		"set metric "+strconv.Itoa(med),
 	)
 	return err
 }
