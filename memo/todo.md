@@ -44,6 +44,15 @@ Command Output: failed to save image: invalid output path: directory "/tmp/image
   - [x] まずは let の方が自分に設定を入れることができる
     - [x] 
 
-## 2022/08/10 午前
-- [ ] デモの見せ方
-  - [ ] 
+
+デバッグ
+- canary リソースを最初に apply したときに blue がメインのとき
+  - green をメインに変更すると 9/91 で止まってしまう
+  - green にしたあとに blue をメインに変更したときはうまく 1/99 まで動く
+
+- 一度 canary リソースを削除して green をメインにして apply
+  - 1/99 までうまくいく
+  - blue に偏光した後に apply してもうまくいく
+
+- ただし canary リソースの status 的には 1/99 に変更されている
+- なにもしていないのに blue → green でも動くようになった
