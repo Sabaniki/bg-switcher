@@ -142,6 +142,10 @@ func (r *BgSwitcherCanaryReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		// bgc.Status.Groups = append(bgc.Status.Groups, newGroup)
 		newGroups = append(newGroups, newGroup)
 	}
+	if err := r.ReconcileBgSwitcherGroup(ctx, bgc, newGroups); err != nil {
+		log.Error(err, "msg", "line", util.LINE())
+		return ctrl.Result{}, err
+	}
 	bgc.Status.Groups = newGroups
 	res.StatusUpdated = true
 
@@ -160,15 +164,15 @@ func (r *BgSwitcherCanaryReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	return ctrl.Result{RequeueAfter: time.Second * 1}, nil
 }
 
-func (r *BgSwitcherCanaryReconciler) ReconcileBgSwitcherGroup(ctx context.Context, bgc seccampv1.BgSwitcherCanary) error {
+func (r *BgSwitcherCanaryReconciler) ReconcileBgSwitcherGroup(ctx context.Context, bgc seccampv1.BgSwitcherCanary, newGroups []seccampv1.Group) error {
 	log := log.FromContext(ctx)
 	bgg := seccampv1.BgSwitcherGroup{}
 	bgg.SetNamespace(bgc.GetNamespace())
 	bgg.SetName(bgc.Name + "-group")
 
 	op, err := ctrl.CreateOrUpdate(ctx, r.Client, &bgg, func() error {
-		bgg.Spec.Groups = bgc.Status.Groups
-		return ctrl.SetControllerReference(&bgg, &bgg, r.Scheme)
+		bgg.Spec.Groups = newGroups
+		return ctrl.SetControllerReference(&bgc, &bgg, r.Scheme)
 	})
 
 	if err != nil {
