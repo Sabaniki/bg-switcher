@@ -29,6 +29,7 @@ import (
 
 	seccampv1 "github.com/Sabaniki/bg-switcher/api/v1"
 	"github.com/Sabaniki/bg-switcher/pkg/util"
+	"github.com/k0kubun/pp"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -52,8 +53,9 @@ func (r *BgSwitcherCanaryReconciler) Reconcile(ctx context.Context, req ctrl.Req
 			return ctrl.Result{}, nil
 		}
 		log.Error(err, "msg", "line", util.LINE())
-		return ctrl.Result{}, err
+		return ctrl.Result{RequeueAfter: time.Second * 1}, err
 	}
+	pp.Println("Rencile start ")
 
 	// 少なくとも時間要件を満たしていたらリコンサイルする
 	acceptReconcile := bgc.Status.NextTimestamp.Before(&metav1.Time{Time: time.Now()})
@@ -63,13 +65,19 @@ func (r *BgSwitcherCanaryReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		res.StatusUpdated = true
 		acceptReconcile = true
 	}
+	for _, statusGroup := range bgc.Status.Groups {
+		if statusGroup.Weight == 100 || statusGroup.Weight == 0 {
+			acceptReconcile = true
+			break
+		}
+	}
 
 	if !acceptReconcile {
 		bgc.Status.LastTimestamp = metav1.Now()
 		bgc.Status.Spent += 1 // 適当
 		if err := r.Status().Update(ctx, &bgc); err != nil {
 			log.Error(err, "msg", "line", util.LINE())
-			return ctrl.Result{}, err
+			return ctrl.Result{RequeueAfter: time.Second * 1}, err
 		}
 		return ctrl.Result{RequeueAfter: time.Second * 1}, nil
 	}
@@ -84,9 +92,9 @@ func (r *BgSwitcherCanaryReconciler) Reconcile(ctx context.Context, req ctrl.Req
 			}
 		}
 		if !foundColorInStatus {
-			weight := 1
+			weight := 0
 			if bgc.Spec.MainColor == specGroup.Color {
-				weight = 99
+				weight = 100
 			}
 			newGroup := seccampv1.Group{
 				Color:     specGroup.Color,
@@ -101,7 +109,11 @@ func (r *BgSwitcherCanaryReconciler) Reconcile(ctx context.Context, req ctrl.Req
 
 	now := metav1.Now()
 	bgc.Status.LastTimestamp = now
-	next := bgc.Spec.Duration / bgc.Spec.Variation
+	step := int(100 / bgc.Spec.Variation)
+	if bgc.Spec.Variation%60 != 0 {
+		step++
+	}
+	next := bgc.Spec.Duration / step
 	bgc.Status.NextTimestamp = metav1.NewTime(now.Add(time.Second * time.Duration(next)))
 	bgc.Status.Spent += 1 // 適当
 
@@ -110,13 +122,13 @@ func (r *BgSwitcherCanaryReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		if res.SpecUpdated {
 			if err := r.Update(ctx, &bgc); err != nil {
 				log.Error(err, "msg", "line", util.LINE())
-				return ctrl.Result{}, err
+				return ctrl.Result{RequeueAfter: time.Second * 1}, err
 			}
 		}
 		if res.StatusUpdated {
 			if err := r.Status().Update(ctx, &bgc); err != nil {
 				log.Error(err, "msg", "line", util.LINE())
-				return ctrl.Result{}, err
+				return ctrl.Result{RequeueAfter: time.Second * 1}, err
 			}
 		}
 		return ctrl.Result{Requeue: true}, nil
@@ -129,10 +141,10 @@ func (r *BgSwitcherCanaryReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		} else {
 			weight -= bgc.Spec.Variation
 		}
-		if 99 < weight {
-			weight = 99
-		} else if weight < 1 {
-			weight = 1
+		if 100 < weight {
+			weight = 100
+		} else if weight < 0 {
+			weight = 0
 		}
 		newGroup := seccampv1.Group{
 			Color:     statusGroup.Color,
@@ -152,13 +164,13 @@ func (r *BgSwitcherCanaryReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	if res.SpecUpdated {
 		if err := r.Update(ctx, &bgc); err != nil {
 			log.Error(err, "msg", "line", util.LINE())
-			return ctrl.Result{}, err
+			return ctrl.Result{RequeueAfter: time.Second * 1}, err
 		}
 	}
 	if res.StatusUpdated {
 		if err := r.Status().Update(ctx, &bgc); err != nil {
 			log.Error(err, "msg", "line", util.LINE())
-			return ctrl.Result{}, err
+			return ctrl.Result{RequeueAfter: time.Second * 1}, err
 		}
 	}
 	return ctrl.Result{RequeueAfter: time.Second * 1}, nil
@@ -169,9 +181,11 @@ func (r *BgSwitcherCanaryReconciler) ReconcileBgSwitcherGroup(ctx context.Contex
 	bgg := seccampv1.BgSwitcherGroup{}
 	bgg.SetNamespace(bgc.GetNamespace())
 	bgg.SetName(bgc.Name + "-group")
+	pp.Println("Renciling BgSwitcherGroup")
 
 	op, err := ctrl.CreateOrUpdate(ctx, r.Client, &bgg, func() error {
 		bgg.Spec.Groups = newGroups
+
 		return ctrl.SetControllerReference(&bgc, &bgg, r.Scheme)
 	})
 

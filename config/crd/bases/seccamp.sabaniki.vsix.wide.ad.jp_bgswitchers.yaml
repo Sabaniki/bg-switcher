@@ -48,10 +48,13 @@ spec:
             properties:
               color:
                 type: string
+              med:
+                type: integer
               weight:
                 type: integer
             required:
             - color
+            - med
             - weight
             type: object
         type: object

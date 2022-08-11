@@ -33,6 +33,7 @@ type BgSwitcherSpec struct {
 type BgSwitcherStatus struct {
 	Color  string `json:"color"`
 	Weight int    `json:"weight"`
+	Med    int    `json:"med"`
 }
 
 //+kubebuilder:object:root=true
