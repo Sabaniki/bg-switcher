@@ -18,22 +18,24 @@ def main():
 
     before_rxs = init_rxs
     before_txs = init_txs
+    subprocess.run("clear")
     while True:
         sleep(0.5)
         rx = subprocess.check_output("ip -s -j link | jq '.[].stats64.rx.packets' -r", shell=True, encoding="UTF-8" )
         current_rxs = current_xx(rx, init_rxs)
         tx = subprocess.check_output("ip -s -j link | jq '.[].stats64.tx.packets' -r", shell=True, encoding="UTF-8" )
         current_txs = current_xx(tx, init_txs)
-        res = '{:<10}  {:<20}  {:<20}\n'.format("interface", "rx", "tx")
+        res = 'hostname: ' + os.uname()[1] + '\n'
+        res += '{:<10}  {:<20}  {:<20}\n'.format("interface", "rx", "tx")
         for i in range(len(ifs)):
-            rx = str(current_rxs[i]) if current_rxs[i] - before_rxs[i] < 1 else Color.RED + str(current_rxs[i]) 
-            tx = str(current_txs[i]) if current_txs[i] - before_txs[i] < 1 else Color.RED + str(current_txs[i])
+            rx = str(current_rxs[i]) if current_rxs[i] - before_rxs[i] < 10 else Color.YELLOW + str(current_rxs[i]) + Color.END
+            tx = str(current_txs[i]) if current_txs[i] - before_txs[i] < 10 else Color.YELLOW + str(current_txs[i]) + Color.END
             res += '{:<10}  {:<20}  {:<20}\n'.format(ifs[i], rx, tx)
         magic_char = '\033[F'
         ret_depth = magic_char * res.count('\n')
         print('{}{}'.format(ret_depth, res), end='', flush = True)
-        # before_rxs = current_rxs
-        # before_txs = current_txs
+        before_rxs = current_rxs
+        before_txs = current_txs
 
 def current_xx(xx, init_xxs):
     xx_int = list(map(lambda res: int(res), xx.splitlines()))
