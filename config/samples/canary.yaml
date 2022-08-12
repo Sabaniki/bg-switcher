@@ -14,6 +14,6 @@ spec:
         - green-a
         - green-b
         - green-c
-  mainColor: blue
+  mainColor: green
   duration: 80
   variation: 20
