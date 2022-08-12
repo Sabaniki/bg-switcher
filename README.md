@@ -11,7 +11,7 @@
 
 
 ## デモ1
-![demo](memo/demo-v3.gif)
+![demo](memo/demo-v3-2.gif)
 - Green → Blue に変更させる様子
 - 80 秒かけて，一度に 20% ずつ流量を変化
   - これらの値はパラメータとして自由に指定可能
